@@ -1,0 +1,61 @@
+.page.themes
+    flex-direction: column
+    display: flex
+    flex: 1
+
+    & > .empty
+        justify-content: center
+        align-items: center
+        display: flex
+        flex: 1
+        
+        .title
+            color: transparentize(#000, 0.2)
+            text-align: center
+            font-weight: 500
+            font-size: 14px
+
+    &.loading
+        justify-content: center
+        align-items: center
+
+    & > .header
+        border-bottom: 1px solid rgba(0,0,0, 0.05)
+        position: relative
+        
+        align-items: center
+        display: flex
+
+        margin-top: 1px
+        
+        .actions
+            padding: 0 16px 0 5px
+            align-items: center
+            display: flex
+
+            .action
+                background-color: transparent
+                transition: all .2s ease
+                border-radius: 3px
+                user-select: none
+                outline: none
+                border: none
+
+                justify-content: center
+                align-items: center
+                display: flex
+
+                height: 24px
+                width: 34px
+
+                cursor: pointer
+
+                &:hover
+                    background-color: transparentize($primary-blue, 0.9)
+
+                svg path
+                    stroke: transparentize(#000, 0.35)
+
+                &:last-child
+                    svg path
+                        stroke: $primary-blue !important

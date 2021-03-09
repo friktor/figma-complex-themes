@@ -1,0 +1,95 @@
+.page.library
+    flex-direction: column
+    display: flex
+    flex: 1
+
+    & > .header
+        border-bottom: 1px solid rgba(0,0,0, 0.05)
+        position: relative
+        padding: 0px 16px
+        height: 36px
+        
+        justify-content: space-between
+        align-items: center
+        display: flex
+
+        .title
+            background: transparent
+            font-weight: 500
+            font-size: 12px
+            border: none
+            height: auto
+            color: #000
+            flex: 1
+
+            &:focus
+                outline: none
+
+    .actions
+        align-items: center
+        display: flex
+
+        .action
+            background-color: transparent
+            transition: all .2s ease
+            border-radius: 3px
+            user-select: none
+
+            outline: none
+            border: none
+
+            cursor: pointer
+
+            justify-content: center
+            align-items: center
+            display: flex
+
+            height: 24px
+            width: 34px
+
+            &:hover
+                background-color: transparentize($primary-blue, 0.9)
+            svg path
+                stroke: transparentize(#000, 0.35)
+
+    & > .content
+        flex-direction: column
+        display: flex
+        flex: 1 
+
+        &:focus
+            outline: none
+
+        & > .dropzone
+            border: 2px dashed rgba(0,0,0, 0.25)
+            border-radius: 5px
+            margin: 16px
+
+        & > .empty, & > .dropzone
+            justify-content: center
+            align-items: center
+            display: flex
+            flex: 1
+
+            .title
+                color: transparentize(#000, 0.2)
+                text-align: center
+                font-weight: 500
+                font-size: 14px
+
+        .items
+            flex-direction: column
+            display: flex
+
+            .item.theme
+                justify-content: space-between
+                align-items: center
+                display: flex
+
+                border-bottom: 1px solid transparentize(#000, 0.95)
+                padding: 8px 16px
+
+                .title
+                    color: transparentize(#000, 0.2)
+                    font-weight: 500
+                    font-size: 11px

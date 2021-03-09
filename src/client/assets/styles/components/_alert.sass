@@ -1,0 +1,18 @@
+.alert
+    border: 1px solid transparentize(#000, 0.95)
+    background-color: #fff
+    min-height: 36px
+    width: 320px
+    
+    justify-content: center
+    flex-direction: column
+    display: flex
+
+    .message
+        color: transparentize(#000, 0.3)
+        font-weight: 400
+        margin: 11px 16px 
+        font-size: 14px
+
+    &.info, &.success
+        border-top: 2px solid $primary-blue

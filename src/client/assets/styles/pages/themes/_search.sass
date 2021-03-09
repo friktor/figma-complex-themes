@@ -1,0 +1,45 @@
+.page.themes > .header .search
+    position: relative
+    align-items: center
+    display: flex
+    flex: 1
+
+    & > svg
+        position: absolute
+        left: 10px
+        top: 10px
+
+        path
+            stroke: transparentize(#000, 0.3)
+
+    input
+        color: transparentize(#000, 0.2)
+        padding: 0 10px 0 34px
+        font-weight: 500
+        font-size: 12px
+        height: 36px
+        border: none
+        flex: 1
+
+        &:focus
+            outline: none
+
+        &::placeholder
+            color: transparentize(#000, 0.5)
+
+    .clear
+        justify-content: center
+        align-items: center
+        display: flex
+
+        height: 24px
+        width: 24px
+
+        transition: all 0.25s ease
+        border-radius: 4px
+
+        &:hover
+            background-color: transparentize(#000, 0.9)
+        
+        svg path
+            stroke: transparentize(#000, 0.3)

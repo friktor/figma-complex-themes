@@ -1,0 +1,52 @@
+.collection .items .item
+    background-color: transparent
+    transition: all 0.2s ease
+    padding: 0 16px
+    height: 36px
+
+    justify-content: space-between
+    align-items: center
+    display: flex
+
+    .title
+        align-items: center
+        display: flex
+        flex: 1
+
+        .name
+            margin-left: 15px
+            flex: 1
+
+    &:hover
+        background-color: transparentize($primary-blue, 0.95)
+
+        // .actions
+        //     visibility: visible
+
+    .actions
+        // visibility: hidden
+
+        align-items: center
+        display: flex
+        
+        .action
+            background-color: transparent
+            transition: all .25s ease
+            border-radius: 3px
+            user-select: none
+            cursor: pointer
+            outline: none
+            border: none
+
+            justify-content: center
+            align-items: center
+            display: flex
+
+            height: 24px
+            width: 34px
+
+            opacity: 0.65
+
+            &:hover
+                background-color: transparentize(#000, 0.9)
+                opacity: 0.85

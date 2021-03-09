@@ -1,0 +1,91 @@
+.collection .items .group
+    & > .header
+        justify-content: space-between
+        transition: all 0.25 ease
+        padding: 4px 16px
+        display: flex
+        
+        .name
+            align-items: center
+            display: flex
+
+            .icon
+                margin-right: 6px
+                cursor: pointer
+
+                &.opened svg
+                    transform: rotate(0deg)
+
+                svg
+                    transition: all 0.25s ease
+                    transform: rotate(-90deg)
+            
+            .input.group
+                span
+                    cursor: pointer
+                    
+                span, input
+                    color: transparentize(#000, 0.15)
+                    line-height: 12px
+                    font-weight: 400
+                    font-size: 12px
+            
+                input
+                    border: none
+                    width: 100%
+                    padding: 0
+                    &:focus
+                        outline: none
+
+        &:hover
+            background-color: transparentize($primary-blue, 0.95)
+
+            // .actions
+            //     visibility: visible
+
+        .actions
+            align-items: center
+            display: flex
+
+            // visibility: hidden
+
+            .action
+                background-color: transparent
+                transition: all .2s ease
+                border-radius: 3px
+                user-select: none
+                outline: none
+                border: none
+
+                cursor: pointer
+
+                justify-content: center
+                align-items: center
+                display: flex
+
+                height: 24px
+                width: 34px
+
+                &:hover
+                    background-color: transparentize($primary-blue, 0.9)
+
+                svg path
+                    stroke: transparentize(#000, 0.35)
+                    fill: transparentize(#000, 0.35)
+
+                &:last-child
+                    svg path
+                        stroke: $primary-blue !important
+    
+    & > .items
+        transition: all 0.3s ease
+        max-height: 0px
+        min-height: 0px
+        
+        overflow: hidden
+
+        &.opened
+            max-height: 12000px
+
+        & > .item > .header
+            padding-left: 36px
