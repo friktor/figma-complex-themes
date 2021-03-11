@@ -8,6 +8,8 @@ export const createDraftStyle = (
     collection?: string,
     groupName?: string,
     styleName?: string,
+
+    styleType: StyleType = StyleType.PAINT,
 ): RawPaintStyle | RawTextStyle => {
     const name = styleNames.generate(collection, groupName, styleName)
     const names = styleNames.parse(name)
@@ -22,17 +24,26 @@ export const createDraftStyle = (
         ...names,
     }
 
-    const inner: InnerProperties = {
-        type: StyleType.PAINT,
-        properties: {
-            paints: [ paints.createSolidPaint() ],
+    let inner: InnerProperties 
+    
+    if (styleType === StyleType.PAINT) {
+        inner = {
+            type: StyleType.PAINT,
+            properties: {
+                paints: [ paints.createSolidPaint() ],
+            }
+        }
+    } else {
+        inner = {
+            type: StyleType.TEXT,
+            properties: paints.createTextProperties(),
         }
     }
 
     return {
         inner,
         base,
-    }
+    } as any
 }
 
 export const createStyleFromRaw = (

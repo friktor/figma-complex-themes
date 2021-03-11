@@ -1,5 +1,7 @@
 import chroma from "chroma-js"
+import assign from "lodash-es/assign"
 import map from "lodash-es/map"
+import { TextProperties } from "models"
 
 export interface Stop {
     offset: string,
@@ -71,6 +73,21 @@ export const createSolidPaint = (color: string = "#000"): SolidPaint => {
         opacity,
     }
 }
+
+export const createTextProperties = (
+    family = "Roboto",
+    style = "Regular",
+    options?: Partial<Omit<TextProperties, "fontName">>,
+): TextProperties => assign({
+    letterSpacing: { unit: "PERCENT", value: 0 },
+    lineHeight: { unit: "AUTO" },
+    fontName: { family, style },
+    textDecoration: "NONE",
+    textCase: "ORIGINAL",
+    paragraphSpacing: 0,
+    paragraphIndent: 0,
+    fontSize: 14,
+}, options)
 
 export const createGradientStop = {
     forFigma: (position: number, color: string): ColorStop => {

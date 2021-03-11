@@ -52,7 +52,7 @@ export interface RawPaintStyle extends RawStyle {
 
 export interface RawTextStyle extends RawStyle {
     inner: {
-        type: StyleType.TEXT,
         properties: TextProperties,
+        type: StyleType.TEXT,
     }
 }

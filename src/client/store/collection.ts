@@ -138,23 +138,19 @@ export class StylesCollection {
         styleType: "paint" | "text",
         styleName?: string,
     ) {
-        let names
+        let args
         
         if (this.storeType === "theme") {
-            names = [this.name, "Temp", styleName || "Untitled"]
+            args = [this.name, "Temp", styleName || "Untitled", styleType.toUpperCase()]
         } else {
-            names = [undefined, this.name, styleName || "Untitled"]
+            args = [undefined, this.name, styleName || "Untitled", styleType.toUpperCase()]
         }
 
-        if (styleType === "paint") {
-            const { base, inner } = Style.formatDraft(...names)
-            const style = new Style(base, inner)
-            
-            this.addStyle(style)
-            style.sync()
-        } else {
-            // @TODO: implement create draft of text style later
-        }
+        const { base, inner } = Style.formatDraft(...args)
+        const style = new Style(base, inner)
+        
+        this.addStyle(style)
+        style.sync()
     }
 
     // get original style from other source (like another collection),

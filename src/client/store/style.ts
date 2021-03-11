@@ -9,8 +9,8 @@ import { ThemeStore } from "./themeStore"
 import { StylesGroup } from "./group"
 
 export class Style {
-    static formatDraft(collection?: string, groupName?: string, styleName?: string) {
-        return createDraftStyle(collection, groupName, styleName)
+    static formatDraft(collection?: string, groupName?: string, styleName?: string, styleType: StyleType = StyleType.PAINT) {
+        return createDraftStyle(collection, groupName, styleName, styleType)
     }
 
     // helper constructor for create from figma raw styles
