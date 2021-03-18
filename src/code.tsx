@@ -33,8 +33,8 @@ class Main {
         this.setup()
 
         figma.showUI(__html__, {
-            height: 500,
-            width: 320,
+            height: 600,
+            width: 340,
         })        
     }
 }

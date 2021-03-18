@@ -4,3 +4,4 @@ node_modules/
 *.tsbuildinfo
 yarn.lock
 .DS_Store
+src/client/_store_

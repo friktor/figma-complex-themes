@@ -8,13 +8,17 @@ import { SelectPopup } from "client/components"
 import { useLibrary } from "client/store"
 import { SerializedTheme } from "models"
 import { ThemeItem } from "./ThemeItem"
+import { delay } from "utils/delay"
 
 export const Library = observer(function Library() {
     const alert = Alert.useAlert()
     const library = useLibrary()
+    const { themes } = library
     
     const onImportCurrentTheme = React.useCallback(async () => {
         await library.importCurrentTheme()
+        await delay(150)
+        await library.importLibraries()
         
         alert.success("Theme saved in library", {
             type: "success"
@@ -67,7 +71,7 @@ export const Library = observer(function Library() {
 
     const items: JSX.Element[] = []
     
-    for (const [ key, theme ] of library.themes.entries()) {
+    for (const [ key, theme ] of themes.entries()) {
         items.push(
             <ThemeItem key={`theme-${key}`} theme={theme} />
         )

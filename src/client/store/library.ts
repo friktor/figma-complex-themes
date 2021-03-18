@@ -43,7 +43,6 @@ export class Library {
     @action
     public async importCurrentTheme() {
         await api.serializeCurrentPageTheme()
-        await this.importLibraries()
     }
 
     @action
