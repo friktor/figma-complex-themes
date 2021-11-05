@@ -38,6 +38,7 @@ module.exports = (env, argv) => ({
     output: {
         filename: "[name].js",
         path: path.resolve(__dirname, "dist"),
+        hashFunction: "xxhash64",
     },
 
     plugins: [

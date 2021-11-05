@@ -1,9 +1,6 @@
-import map from "lodash-es/map"
-
 import { SelectionEvent } from "models"
 
-const mapSelections = (selections: readonly SceneNode[]): SelectionEvent[] => map(
-    selections,
+const mapSelections = (selections: readonly SceneNode[]): SelectionEvent[] => selections.map(
     ({ name, type, id }) => ({ name, type, id })
 )
 

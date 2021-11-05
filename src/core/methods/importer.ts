@@ -1,9 +1,7 @@
-import cloneDeep from "lodash-es/cloneDeep"
-import size from "lodash-es/size"
-
 import { ImportStylesOptions, RawPaintStyle } from "models"
 import { processPaintStyle } from "./processing"
 import { createDraftStyle } from "utils/style"
+import { cloneDeep, size } from "utils/helpers"
 import md5 from "utils/md5"
 
 let stylesByHash: {

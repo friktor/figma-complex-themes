@@ -1,10 +1,8 @@
-import each from "lodash-es/each"
-import get from "lodash-es/get"
-
 import { RedrawOptions, SerializedThemeFull } from "models"
 import { getRawStyles } from "./queries"
 import { styleNames } from "utils/style"
 import { serialize } from "utils/serde"
+import { get } from "utils/helpers"
 
 export const redrawFrame = async (options: RedrawOptions) => {
     const { paintStyles: paint, textStyles: text } = await getRawStyles()
@@ -23,7 +21,7 @@ export const redrawFrame = async (options: RedrawOptions) => {
             const names = styleNames.parse(style.name)
 
             if (names.collection && names.groupName && names.styleName) {
-                const targetStyleId = get(targetCollection.paint, [ names.groupName, names.styleName, "id" ])
+                const targetStyleId = get(targetCollection.paint, [ names.groupName, names.styleName, "id" ].join('.'))
                 return targetStyleId
             }
         }
@@ -38,7 +36,7 @@ export const redrawFrame = async (options: RedrawOptions) => {
             const names = styleNames.parse(style.name)
 
             if (names.collection && names.groupName && names.styleName) {
-                const targetStyleId = get(targetCollection.text, [ names.groupName, names.styleName, "id" ])
+                const targetStyleId = get(targetCollection.text, [ names.groupName, names.styleName, "id" ].join('.'))
                 return targetStyleId
             }
         }
@@ -76,7 +74,7 @@ export const redrawFrame = async (options: RedrawOptions) => {
         redrawNode(node)
 
         if (node.children && node.children.length > 0) {
-            each(node.children, _iterator)
+            node.children.forEach(_iterator);
         }
     }
 

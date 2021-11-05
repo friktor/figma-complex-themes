@@ -1,6 +1,4 @@
 import chroma from "chroma-js"
-import assign from "lodash-es/assign"
-import map from "lodash-es/map"
 import { TextProperties } from "models"
 
 export interface Stop {
@@ -41,7 +39,7 @@ export const paintToCss = {
     gradient: (angle: Transform, stops: ColorStop[]) => {
         const _angle = convertGradientAngle.fromMatrix(angle)
 
-        const _stops = map(stops, (stop) => {
+        const _stops = stops.map((stop) => {
             const { color: { r, g, b, a } } = stop
             const alpha = parseFloat(a.toFixed(2))
 
@@ -78,7 +76,7 @@ export const createTextProperties = (
     family = "Roboto",
     style = "Regular",
     options?: Partial<Omit<TextProperties, "fontName">>,
-): TextProperties => assign({
+): TextProperties => Object.assign({
     letterSpacing: { unit: "PERCENT", value: 0 },
     lineHeight: { unit: "AUTO" },
     fontName: { family, style },

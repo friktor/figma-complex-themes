@@ -1,7 +1,6 @@
 import { RpcHandler } from "./utils/rpc/handler"
-import { rpc } from "./core"
-import map from "lodash-es/map"
 import { RpcAction } from "models"
+import { rpc } from "./core"
 
 class Main {
     public rpc: RpcHandler
@@ -16,8 +15,7 @@ class Main {
     }
 
     public onSelectionChange = () => {
-        const selection = map(
-            figma.currentPage.selection,
+        const selection = figma.currentPage.selection.map(
             ({ name, type, id }) => ({ name, type, id })
         )
 

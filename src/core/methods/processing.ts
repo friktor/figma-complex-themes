@@ -1,7 +1,4 @@
 // CRUD operations for paint & text styles
-import assign from "lodash-es/assign"
-import { find } from "lodash-es"
-
 import { RawPaintStyle, RawStyle, RawTextStyle } from "models"
 import objectSwitch from "utils/objectSwitch"
 
@@ -14,10 +11,7 @@ export const processPaintStyle = async (style: RawPaintStyle): Promise<RawStyle>
 
     // If founded exists style by unique name from drafted - replace it
     if (isDraft) {        
-        const styleByName = find(
-            figma.getLocalPaintStyles(),
-            { name }
-        )
+        const styleByName = figma.getLocalPaintStyles().find(style => style.name === name)
 
         if (styleByName) {
             paintStyle = styleByName
@@ -31,7 +25,7 @@ export const processPaintStyle = async (style: RawPaintStyle): Promise<RawStyle>
     paintStyle.name = name
     paintStyle.paints = inner.properties.paints
 
-    return assign(style, { base: assign(base, {
+    return Object.assign(style, { base: Object.assign(base, {
         id: paintStyle.id,
 
         isDraft: false,
@@ -51,10 +45,7 @@ export const processTextStyle = async (style: RawTextStyle): Promise<RawStyle> =
 
     // If founded exists style by unique name from drafted - replace it
     if (isDraft) {        
-        const styleByName = find(
-            figma.getLocalTextStyles(),
-            { name }
-        )
+        const styleByName = figma.getLocalTextStyles().find(style => style.name === name)
 
         if (styleByName) {
             textStyle = styleByName
@@ -83,7 +74,7 @@ export const processTextStyle = async (style: RawTextStyle): Promise<RawStyle> =
         console.error(error)
     }
 
-    return assign(style, { base: assign(base, {
+    return Object.assign(style, { base: Object.assign(base, {
         id: textStyle.id,
 
         isDraft: false,

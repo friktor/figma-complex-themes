@@ -1,5 +1,3 @@
-import assign from "lodash-es/assign"
-
 const nameMatchers = {
     themes: /\[(\w+|\w+:\w+)\]/,
     group: /^(\w+)\/(.*)$/,
@@ -34,13 +32,13 @@ export const parse = (rawname: string): {
         const names = _names(rawname.replace($themeFull, "").replace(" ", ""))
 
         if (names) {
-            result = assign({}, result, names)
+            result = Object.assign({}, result, names)
         }
     } else {
         const names = _names(rawname.replace(" ", ""))
 
         if (names) {
-            result = assign({}, result, names)
+            result = Object.assign({}, result, names)
         }
     }
 

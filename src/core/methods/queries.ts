@@ -1,5 +1,4 @@
-import pick from "lodash-es/pick"
-import map from "lodash-es/map"
+import { pick } from "utils/helpers"
 
 interface RawStyles {
     paintStyles: PaintStyle[],
@@ -7,8 +6,7 @@ interface RawStyles {
 }
 
 export const getRawStyles = async (): Promise<RawStyles> => {
-    const paintStyles = map(
-        figma.getLocalPaintStyles(),
+    const paintStyles = figma.getLocalPaintStyles().map(
         (s) => pick(s, [
             "paints",
             "type",
@@ -17,9 +15,7 @@ export const getRawStyles = async (): Promise<RawStyles> => {
         ]),
     )
     
-    const textStyles = map(
-        figma.getLocalTextStyles(),
-        
+    const textStyles = figma.getLocalTextStyles().map(        
         (s) => pick(s, [
             "paragraphSpacing",
             "paragraphIndent",

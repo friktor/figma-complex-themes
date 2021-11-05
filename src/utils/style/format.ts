@@ -1,4 +1,4 @@
-import omit from "lodash-es/omit"
+import { omit } from "utils/helpers"
 
 import { BaseProperties, DeepMutable, InnerProperties, RawPaintStyle, RawTextStyle, StyleType } from "models"
 import * as styleNames from "./names"

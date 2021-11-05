@@ -1,9 +1,6 @@
-import pick from "lodash-es/pick"
-import each from "lodash-es/each"
-import map from "lodash-es/map"
-
 import { styleNames, paints } from "utils/style"
 import objectSwitch from "utils/objectSwitch"
+import { pick } from "utils/helpers"
 
 import {
     SerializedPaintStyle,
@@ -16,8 +13,8 @@ import {
 
 export const serializeStyle = (style: PaintStyle | TextStyle): SerializedTextStyle | SerializedPaintStyle => {
     if (style.type === StyleType.PAINT) {
-        const _paints = map(
-            style.paints, (paint) => objectSwitch(paint.type, {
+        const _paints = style.paints.map(
+            (paint) => objectSwitch(paint.type, {
                 SOLID: () => paints.paintToCss.solid(paint as any),
                 GRADIENT_LINEAR: () => paints.paintToCss.gradient(
                     (paint as any).gradientTransform,
@@ -158,8 +155,8 @@ export const serialize = (
         }
     }
 
-    each(styles.paint, _iterator)
-    each(styles.text, _iterator)
+    styles.paint.forEach(_iterator)
+    styles.text.forEach(_iterator)
 
     return output
 }

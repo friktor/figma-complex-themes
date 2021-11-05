@@ -1,11 +1,7 @@
-import isPlainObject from "lodash-es/isPlainObject"
-import flattenDeep from "lodash-es/flattenDeep"
-import reduce from "lodash-es/reduce"
-import each from "lodash-es/each"
-import map from "lodash-es/map"
 import chroma from "chroma-js"
 
 import { createGradientLinear, createSolidPaint } from "utils/style/paints"
+import { reduceObject, flattenDeep, isPlainObject } from "utils/helpers"
 import { createDraftStyle, styleNames } from "utils/style"
 import { parseGradient } from "utils/parser"
 
@@ -47,7 +43,7 @@ export const deserializeToRawStyles = (themes: SerializedTheme) => {
         groupName: string,
     ) => { 
         const reducer = _reducerValue(collection, groupName)
-        const raws = reduce(groups, reducer, [])
+        const raws = reduceObject(groups, reducer, [])
 
         out.push(raws)
         return out
@@ -59,8 +55,8 @@ export const deserializeToRawStyles = (themes: SerializedTheme) => {
         groupName: string,
     ) => {
         const reducer = _reducerValue(collection, groupName)
-        const paints = reduce(group.paint, reducer, [])
-        const texts = reduce(group.text, reducer, [])
+        const paints = reduceObject(group.paint, reducer, [])
+        const texts = reduceObject(group.text, reducer, [])
         const raws = [ ...paints, ...texts ]
 
         out.push(raws)
@@ -73,8 +69,8 @@ export const deserializeToRawStyles = (themes: SerializedTheme) => {
         collectionName: string,
     ) => {
         const reducer = _reducerGroup(collectionName)
-        const paints = reduce(collection.paint, reducer, [])
-        const texts = reduce(collection.text, reducer, [])
+        const paints = reduceObject(collection.paint, reducer, [])
+        const texts = reduceObject(collection.text, reducer, [])
         const raws = [ ...paints, ...texts ]
 
         out.push(raws)
@@ -82,8 +78,8 @@ export const deserializeToRawStyles = (themes: SerializedTheme) => {
     }
 
     return [
-        ...flattenDeep<RawDeserializedStyle>(reduce(themes.collection, _reducerCollections, [])),
-        ...flattenDeep<RawDeserializedStyle>(reduce(themes.group, _reducerGroups(), [])),
+        ...flattenDeep(reduceObject(themes.collection, _reducerCollections, [])),
+        ...flattenDeep(reduceObject(themes.group, _reducerGroups(), [])),
     ]
 }
 
@@ -107,7 +103,7 @@ export const rawDeserializedToStyle = (raw: RawDeserializedStyle): RawPaintStyle
             _paints = raw.style as string[]
         }
 
-        const paints = map(_paints, (_paint) => {
+        const paints = _paints.map((_paint) => {
             if (chroma.valid(_paint)) {
                 const solid = createSolidPaint(_paint)
                 return solid
@@ -144,7 +140,7 @@ export const deserialize = (theme: SerializedTheme): DeserializedStyles => {
 
     const deserializeRawStyles = deserializeToRawStyles(theme)
     
-    each(deserializeRawStyles, (raw) => {
+    deserializeRawStyles.forEach((raw) => {
         const style = rawDeserializedToStyle(raw)
 
         if (style.inner.type === "PAINT") {
