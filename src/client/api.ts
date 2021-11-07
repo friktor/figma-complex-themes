@@ -1,4 +1,14 @@
-import { DeepMutable, ImportStylesOptions, Library, LibraryRenameOptions, RawStyle, RedrawOptions, RpcAction, SelectionEvent, SerializedTheme } from "models"
+import {
+  DeepMutable,
+  ImportStylesOptions,
+  Library,
+  LibraryRenameOptions,
+  RawStyle,
+  RedrawOptions,
+  RpcAction,
+  SelectionEvent,
+  SerializedTheme,
+} from "models"
 import { RpcOrchestrationService } from "utils/rpc/caller"
 
 export const RpcService = new RpcOrchestrationService()
@@ -7,15 +17,25 @@ export const RpcService = new RpcOrchestrationService()
 window.onmessage = RpcService.matcher
 
 interface RawStyles {
-    paintStyles: DeepMutable<PaintStyle>[],
-    textStyles: DeepMutable<TextStyle>[],
+  paintStyles: DeepMutable<PaintStyle>[]
+  textStyles: DeepMutable<TextStyle>[]
 }
 
-export const importStyleFromFrameToTheme = RpcService.addMethod<ImportStylesOptions, undefined>(RpcAction.IMPORT_STYLE_FROM_FRAME_TO_THEME)
-export const mergeSerializedThemeWithCurrent = RpcService.addMethod<SerializedTheme, any>(RpcAction.MERGE_SERIALIZED_THEME_WITH_CURRENT)
-export const serializeCurrentPageTheme = RpcService.addMethod<undefined, SerializedTheme>(RpcAction.SERIALIZE_CURRENT_PAGE_THEME)
-export const removeThemeFromLibrary = RpcService.addMethod<SerializedTheme, undefined>(RpcAction.REMOVE_THEME_FROM_LIBRARY)
-export const selectAllFramesByStyle = RpcService.addMethod<string, SelectionEvent[]>(RpcAction.SELECT_ALL_FRAMES_BY_STYLE)
+export const importStyleFromFrameToTheme = RpcService.addMethod<ImportStylesOptions, undefined>(
+  RpcAction.IMPORT_STYLE_FROM_FRAME_TO_THEME,
+)
+export const mergeSerializedThemeWithCurrent = RpcService.addMethod<SerializedTheme, any>(
+  RpcAction.MERGE_SERIALIZED_THEME_WITH_CURRENT,
+)
+export const serializeCurrentPageTheme = RpcService.addMethod<undefined, SerializedTheme>(
+  RpcAction.SERIALIZE_CURRENT_PAGE_THEME,
+)
+export const removeThemeFromLibrary = RpcService.addMethod<SerializedTheme, undefined>(
+  RpcAction.REMOVE_THEME_FROM_LIBRARY,
+)
+export const selectAllFramesByStyle = RpcService.addMethod<string, SelectionEvent[]>(
+  RpcAction.SELECT_ALL_FRAMES_BY_STYLE,
+)
 export const getCurrentSelection = RpcService.addMethod<undefined, SelectionEvent[]>(RpcAction.GET_CURRENT_SELECTIONS)
 export const renameLibraryTheme = RpcService.addMethod<LibraryRenameOptions, Library>(RpcAction.RENAME_LIBRARY_THEME)
 export const addToSelections = RpcService.addMethod<string, SelectionEvent[]>(RpcAction.ADD_TO_SELECTIONS)

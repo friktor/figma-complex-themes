@@ -8,7 +8,7 @@ import * as api from "client/api"
 const generateCollections = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>): Collections<T> => {
   const themes: Collections<T> = {}
 
-  const _addCollection = (name) => {
+  const _addCollection = name => {
     if (!themes[name]) {
       themes[name] = {
         groups: {},
@@ -27,13 +27,13 @@ const generateCollections = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>)
     }
   }
 
-  const _addStyle = (style) => {
+  const _addStyle = style => {
     const { collection, groupName, id } = style.base
     themes[collection].groups[groupName].ids.push(id)
     themes[collection].items[id] = style
   }
 
-  styles.forEach((style) => {
+  styles.forEach(style => {
     const { collection, groupName } = (style as any).base
     _addCollection(collection)
     _addGroup(collection, groupName)
@@ -43,17 +43,14 @@ const generateCollections = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>)
   return themes
 }
 
-export const getCurrentThemes = createAsyncThunk(
-  "themes/getCurrentThemes",
-  async () => {
-    const response = await api.getRawStyles()
+export const getCurrentThemes = createAsyncThunk("themes/getCurrentThemes", async () => {
+  const response = await api.getRawStyles()
 
-    const paint = response?.paintStyles.map(Style.createStyleFromRaw)
-    const text = response?.textStyles.map(Style.createStyleFromRaw)
+  const paint = response?.paintStyles.map(Style.createStyleFromRaw)
+  const text = response?.textStyles.map(Style.createStyleFromRaw)
 
-    return {
-      paint: generateCollections(paint || []),
-      text: generateCollections(text || []),
-    }
+  return {
+    paint: generateCollections(paint || []),
+    text: generateCollections(text || []),
   }
-)
+})
