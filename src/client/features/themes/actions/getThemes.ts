@@ -5,7 +5,7 @@ import { Collections } from "../types"
 import * as Style from "utils/style"
 import * as api from "client/api"
 
-const generateCollections = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>): Collections<T> => {
+const normalizeStyles = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>): Collections<T> => {
   const themes: Collections<T> = {}
 
   const _addCollection = (name, type: "theme" | "group") => {
@@ -22,17 +22,17 @@ const generateCollections = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>)
   const _addTheme = (name) => _addCollection(name, "theme")
   const _addGroup = (name) => _addCollection(name, "group")
 
-  const _addThemeGroup = (collection, groupName) => {
-    if (!themes[collection].groups[groupName]) {
-      themes[collection].groups[groupName] = {
-        name: groupName,
+  const _addThemeGroup = (theme, group) => {
+    if (!themes[theme].groups[group]) {
+      themes[theme].groups[group] = {
+        name: group,
         ids: [],
       }
     }
   }
 
   const _addStyle = style => {
-    const { collection: theme, groupName: group, id } = (style as any).base
+    const { theme, group, id } = (style as any).base
     
     if (theme) {
       themes[theme].groups[group].ids.push(id)
@@ -43,7 +43,7 @@ const generateCollections = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>)
   }
 
   styles.forEach(style => {
-    const { collection: theme, groupName: group } = (style as any).base
+    const { theme, group } = (style as any).base
 
     if (theme) {
       _addTheme(theme)
@@ -65,7 +65,7 @@ export const getCurrentThemes = createAsyncThunk("themes/getCurrentThemes", asyn
   const text = response?.textStyles.map(Style.createStyleFromRaw)
 
   return {
-    paint: generateCollections(paint || []),
-    text: generateCollections(text || []),
+    paint: normalizeStyles(paint || []),
+    text: normalizeStyles(text || []),
   }
 })

@@ -110,7 +110,7 @@ export const themesSlice = createSlice({
     },
 
     [createStyle.fulfilled.toString()]: (state, { payload }: PayloadAction<RawStyle>) => {
-      const { collection: theme, groupName: group, id } = payload.base
+      const { theme, group, id } = payload.base
       const type = payload.inner.type.toLowerCase() as "paint" | "text"
 
       if (theme) {

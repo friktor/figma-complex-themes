@@ -55,29 +55,29 @@ export const serialize = (
   disableSerializeStyle = false, // output style values is full figma style
 ): SerializedTheme | SerializedThemeFull => {
   const output = {
-    collection: {},
+    theme: {},
     group: {},
     name,
   }
 
-  const _insertCollection = (collection: string) => {
-    if (!output.collection[collection]) {
-      output.collection[collection] = {
-        type: SerializedUnionType.Collection,
+  const _insertTheme = (theme: string) => {
+    if (!output.theme[theme]) {
+      output.theme[theme] = {
+        type: SerializedUnionType.Theme,
         paint: {},
         text: {},
       }
     }
   }
 
-  const _insertGroup = (groupName: string, styleType: StyleType, collection?: string) => {
-    if (collection) {
-      if (!output.collection[collection][styleType.toLowerCase()][groupName]) {
-        output.collection[collection][styleType.toLowerCase()][groupName] = {}
+  const _insertGroup = (group: string, type: StyleType, theme?: string) => {
+    if (theme) {
+      if (!output.theme[theme][type.toLowerCase()][group]) {
+        output.theme[theme][type.toLowerCase()][group] = {}
       }
     } else {
-      if (!output.group[groupName]) {
-        output.group[groupName] = {
+      if (!output.group[group]) {
+        output.group[group] = {
           type: SerializedUnionType.Group,
           paint: {},
           text: {},
@@ -89,37 +89,24 @@ export const serialize = (
   const _insertStyle = (
     style: SerializedTextStyle | SerializedPaintStyle | TextStyle | PaintStyle,
 
-    groupName: string,
-    styleName: string,
-    styleType: StyleType,
-    collection?: string,
+    group: string,
+    name: string,
+    type: StyleType,
+    theme?: string,
   ) => {
-    if (collection) {
-      output.collection[collection][styleType.toLowerCase()][groupName][styleName] = style
+    if (theme) {
+      output.theme[theme][type.toLowerCase()][group][name] = style
     } else {
-      output.group[groupName][styleType.toLowerCase()][styleName] = style
+      output.group[group][type.toLowerCase()][name] = style
     }
   }
 
   const _iterator = (style: PaintStyle | TextStyle) => {
     const names = styleNames.parse(style.name)
 
-    if (names.collection) {
-      _insertCollection(names.collection)
-
-      _insertGroup(names.groupName, style.type as StyleType, names.collection)
-
-      let serializedStyle: SerializedTextStyle | SerializedPaintStyle | PaintStyle | TextStyle
-
-      if (disableSerializeStyle) {
-        serializedStyle = style
-      } else {
-        serializedStyle = serializeStyle(style)
-      }
-
-      _insertStyle(serializedStyle, names.groupName, names.styleName, style.type as StyleType, names.collection)
-    } else if (names.groupName) {
-      _insertGroup(names.groupName, style.type as StyleType)
+    if (names.theme) {
+      _insertTheme(names.theme)
+      _insertGroup(names.group, style.type as StyleType, names.theme)
 
       let serializedStyle: SerializedTextStyle | SerializedPaintStyle | PaintStyle | TextStyle
 
@@ -129,7 +116,19 @@ export const serialize = (
         serializedStyle = serializeStyle(style)
       }
 
-      _insertStyle(serializedStyle, names.groupName, names.styleName, style.type as StyleType)
+      _insertStyle(serializedStyle, names.group, names.name, style.type as StyleType, names.theme)
+    } else if (names.group) {
+      _insertGroup(names.group, style.type as StyleType)
+
+      let serializedStyle: SerializedTextStyle | SerializedPaintStyle | PaintStyle | TextStyle
+
+      if (disableSerializeStyle) {
+        serializedStyle = style
+      } else {
+        serializedStyle = serializeStyle(style)
+      }
+
+      _insertStyle(serializedStyle, names.group, names.name, style.type as StyleType)
     }
   }
 

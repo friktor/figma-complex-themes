@@ -3,41 +3,43 @@ const nameMatchers = {
   group: /^(\w+)\/(.*)$/,
 }
 
+interface ParsedStylename {
+  theme?: string
+  group?: string
+  name: string
+}
+
 export const parse = (
-  rawname: string,
-): {
-  collection?: string
-  groupName?: string
-  styleName: string
-} => {
+  fullname: string,
+): ParsedStylename => {
   let result: any = {}
 
   const _names = _name => {
     if (nameMatchers.group.test(_name)) {
-      const [$_, groupName, styleName] = _name.match(nameMatchers.group)
+      const [$_, group, name] = _name.match(nameMatchers.group)
 
       return {
-        groupName,
-        styleName,
+        group,
+        name,
       }
     } else {
       return {
-        styleName: _name,
+        name: _name,
       }
     }
   }
 
-  if (nameMatchers.themes.test(rawname)) {
-    const [$themeFull, collection] = rawname.match(nameMatchers.themes)
-    result.collection = collection
+  if (nameMatchers.themes.test(fullname)) {
+    const [$themeFull, theme] = fullname.match(nameMatchers.themes)
+    result.theme = theme
 
-    const names = _names(rawname.replace($themeFull, "").replace(" ", ""))
+    const names = _names(fullname.replace($themeFull, "").replace(" ", ""))
 
     if (names) {
       result = Object.assign({}, result, names)
     }
   } else {
-    const names = _names(rawname.replace(" ", ""))
+    const names = _names(fullname.replace(" ", ""))
 
     if (names) {
       result = Object.assign({}, result, names)
@@ -47,10 +49,10 @@ export const parse = (
   return result
 }
 
-export const generate = (collection?: string, group?: string, styleName?: string) => {
-  const _collection = collection ? `[${collection}]` : ""
+export const generate = (theme?: string, group?: string, name?: string) => {
+  const _theme = theme ? `[${theme}]` : ""
   const _group = group || "Temp"
-  const _style = styleName || "Untitled"
+  const _style = name || "Untitled"
 
-  return `${_group}${_collection}/${_style}`
+  return `${_group}${_theme}/${_style}`
 }

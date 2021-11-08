@@ -5,21 +5,21 @@ import * as styleNames from "./names"
 import * as paints from "./paints"
 
 export const createDraftStyle = (
-  collection?: string,
-  groupName?: string,
-  styleName?: string,
+  theme?: string,
+  group?: string,
+  name?: string,
 
   styleType: StyleType = StyleType.PAINT,
 ): RawPaintStyle | RawTextStyle => {
-  const name = styleNames.generate(collection, groupName, styleName)
-  const names = styleNames.parse(name)
+  const fullname = styleNames.generate(theme, group, name)
+  const names = styleNames.parse(fullname)
 
   const id = `$temp:${Math.random().toString(16).slice(2)}`
 
   const base: BaseProperties = {
     isDirty: true,
     isDraft: true,
-    name,
+    fullname,
     id,
     ...names,
   }
@@ -47,7 +47,7 @@ export const createDraftStyle = (
 }
 
 export const createStyleFromRaw = (
-  style: DeepMutable<PaintStyle> | DeepMutable<TextStyle>,
+  style: DeepMutable<PaintStyle | TextStyle>,
 ): RawPaintStyle | RawTextStyle => {
   const names = styleNames.parse(style.name)
 
@@ -55,7 +55,7 @@ export const createStyleFromRaw = (
     isDirty: false,
     isDraft: false,
 
-    name: style.name,
+    fullname: style.name,
     id: style.id,
     ...names,
   }

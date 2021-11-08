@@ -21,14 +21,14 @@ import {
 
 export const deserializeToRawStyles = (themes: SerializedTheme) => {
   const _reducerValue =
-    (collection?: string, groupName?: string) =>
-    (out: RawDeserializedStyle[], style: SerializedPaintStyle | SerializedTextStyle, styleName: string) => {
+    (theme?: string, group?: string) =>
+    (out: RawDeserializedStyle[], style: SerializedPaintStyle | SerializedTextStyle, name: string) => {
       const raw: RawDeserializedStyle = {
-        name: styleNames.generate(collection, groupName, styleName),
-        collection,
-        groupName,
-        styleName,
+        fullname: styleNames.generate(theme, group, name),
         style,
+        theme,
+        group,
+        name,
       }
 
       out.push(raw)
@@ -36,13 +36,13 @@ export const deserializeToRawStyles = (themes: SerializedTheme) => {
     }
 
   const _reducerGroup =
-    (collection?: string) =>
+    (theme?: string) =>
     (
       out: RawDeserializedStyle[][],
       groups: Record<string, SerializedPaintStyle | SerializedTextStyle>,
-      groupName: string,
+      group: string,
     ) => {
-      const reducer = _reducerValue(collection, groupName)
+      const reducer = _reducerValue(theme, group)
       const raws = reduceObject(groups, reducer, [])
 
       out.push(raws)
@@ -50,24 +50,24 @@ export const deserializeToRawStyles = (themes: SerializedTheme) => {
     }
 
   const _reducerGroups =
-    (collection?: string) => (out: RawDeserializedStyle[][], group: SerializedGroup, groupName: string) => {
-      const reducer = _reducerValue(collection, groupName)
-      const paints = reduceObject(group.paint, reducer, [])
-      const texts = reduceObject(group.text, reducer, [])
+    (theme?: string) => (out: RawDeserializedStyle[][], groupMap: SerializedGroup, group: string) => {
+      const reducer = _reducerValue(theme, group)
+      const paints = reduceObject(groupMap.paint, reducer, [])
+      const texts = reduceObject(groupMap.text, reducer, [])
       const raws = [...paints, ...texts]
 
       out.push(raws)
       return out
     }
 
-  const _reducerCollections = (
+  const _reducerThemes = (
     out: RawDeserializedStyle[][][],
-    collection: SerializedCollection,
-    collectionName: string,
+    themeMap: SerializedCollection,
+    theme: string,
   ) => {
-    const reducer = _reducerGroup(collectionName)
-    const paints = reduceObject(collection.paint, reducer, [])
-    const texts = reduceObject(collection.text, reducer, [])
+    const reducer = _reducerGroup(theme)
+    const paints = reduceObject(themeMap.paint, reducer, [])
+    const texts = reduceObject(themeMap.text, reducer, [])
     const raws = [...paints, ...texts]
 
     out.push(raws)
@@ -75,13 +75,13 @@ export const deserializeToRawStyles = (themes: SerializedTheme) => {
   }
 
   return [
-    ...flattenDeep(reduceObject(themes.collection, _reducerCollections, [])),
+    ...flattenDeep(reduceObject(themes.theme, _reducerThemes, [])),
     ...flattenDeep(reduceObject(themes.group, _reducerGroups(), [])),
   ]
 }
 
 export const rawDeserializedToStyle = (raw: RawDeserializedStyle): RawPaintStyle | RawTextStyle => {
-  const style = createDraftStyle(raw.collection, raw.groupName, raw.styleName)
+  const style = createDraftStyle(raw.theme, raw.group, raw.name)
 
   if (isPlainObject(raw.style)) {
     const inner: InnerProperties = {
@@ -147,6 +147,5 @@ export const deserialize = (theme: SerializedTheme): DeserializedStyles => {
     }
   })
 
-  console.log(output)
   return output
 }

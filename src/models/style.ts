@@ -7,12 +7,12 @@ export interface BaseProperties {
   isDirty: boolean // flag marked updated style and not synchronized with main layer
   isDraft: boolean // flag for new style not created on figma main layer
 
-  name: string // original fullname of style
+  fullname: string // original fullname of style
   id: string // unique id of style
 
-  collection?: string // collection name of have
-  groupName?: string // group of collection, or common group name
-  styleName: string // extracted style name
+  theme?: string // collection name of have
+  group?: string // group of collection, or common group name
+  name: string // extracted style name
 }
 
 export interface PaintProperties {

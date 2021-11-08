@@ -36,11 +36,11 @@ export function ThemeGroup({ item, row }: IProps) {
     // @TODO:
   }, [])
 
-  const onCloneCollection = useCallback(() => {
+  const onCloneTheme = useCallback(() => {
     // @TODO:
   }, [])
 
-  const onRemoveCollection = useCallback(() => {
+  const onRemoveTheme = useCallback(() => {
     // @TODO:
   }, [])
 
@@ -74,11 +74,11 @@ export function ThemeGroup({ item, row }: IProps) {
           icon="MenuDots"
           iconSize={16}
           items={[{
-            onClick: onCloneCollection,
+            onClick: onCloneTheme,
             title: "Duplicate",
             icon: "Copy",
           }, {
-            onClick: onRemoveCollection,
+            onClick: onRemoveTheme,
             title: "Remove",
             icon: "Trash",
           }]}

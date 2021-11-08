@@ -16,7 +16,7 @@ export type SerializedTextStyle = Pick<
 export type SerializedPaintStyle = string | string[]
 
 export enum SerializedUnionType {
-  Collection = "collection",
+  Theme = "theme",
   Group = "group",
 }
 
@@ -33,7 +33,7 @@ export type SerializedGroup<PD = SerializedPaintStyle, TD = SerializedTextStyle>
 >
 
 export type SerializedCollection<PD = SerializedPaintStyle, TD = SerializedTextStyle> = SerializedUnion<
-  SerializedUnionType.Collection,
+  SerializedUnionType.Theme,
   Record<string, Record<string, PD>>,
   Record<string, Record<string, TD>>
 >
@@ -41,22 +41,22 @@ export type SerializedCollection<PD = SerializedPaintStyle, TD = SerializedTextS
 export interface SerializedTheme {
   name: string
 
-  collection: Record<string, SerializedCollection>
+  theme: Record<string, SerializedCollection>
   group: Record<string, SerializedGroup>
 }
 
 export interface SerializedThemeFull {
   name: string
 
-  collection: Record<string, SerializedCollection<PaintStyle, TextStyle>>
+  theme: Record<string, SerializedCollection<PaintStyle, TextStyle>>
   group: Record<string, SerializedGroup<PaintStyle, TextStyle>>
 }
 
 export interface RawDeserializedStyle {
   style: SerializedPaintStyle | SerializedTextStyle
-  collection?: string
-  groupName: string
-  styleName: string
+  fullname: string
+  theme?: string
+  group: string
   name: string
 }
 

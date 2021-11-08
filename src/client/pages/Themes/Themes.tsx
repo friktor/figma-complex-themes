@@ -42,7 +42,7 @@ export function Themes(props: IProps) {
     // @TPDP:
   }, [])
 
-  const onCreateTempCollection = React.useCallback(() => {
+  const onCreateTempTheme = React.useCallback(() => {
     // @TPDP:
   }, [])
 
@@ -75,8 +75,8 @@ export function Themes(props: IProps) {
     onClick: onCreateTempGroup,
     title: "Create Group",
   }, {
-    onClick: onCreateTempCollection,
-    title: "Create Collection",
+    onClick: onCreateTempTheme,
+    title: "Create Theme",
   }, {
     onClick: onImportStyles,
     title: importStylesTitle,

@@ -7,10 +7,10 @@ import { get } from "utils/helpers"
 export const redrawFrame = async (options: RedrawOptions) => {
   const { paintStyles: paint, textStyles: text } = await getRawStyles()
   const serialized = serialize("redraw", { paint, text } as any, true) as SerializedThemeFull
-  const targetCollection = serialized.collection[options.targetThemeCollection]
+  const targetTheme = serialized.theme[options.targetThemeCollection]
 
-  if (!targetCollection) {
-    console.warn(`Collection '${options.targetThemeCollection}' not exists`)
+  if (!targetTheme) {
+    console.warn(`Theme '${options.targetThemeCollection}' not exists`)
     return
   }
 
@@ -20,8 +20,8 @@ export const redrawFrame = async (options: RedrawOptions) => {
     if (style && style.type === "PAINT") {
       const names = styleNames.parse(style.name)
 
-      if (names.collection && names.groupName && names.styleName) {
-        const targetStyleId = get(targetCollection.paint, [names.groupName, names.styleName, "id"].join("."))
+      if (names.theme && names.group && names.name) {
+        const targetStyleId = get(targetTheme.paint, [names.group, names.name, "id"].join("."))
         return targetStyleId
       }
     }
@@ -35,8 +35,8 @@ export const redrawFrame = async (options: RedrawOptions) => {
     if (style && style.type === "TEXT") {
       const names = styleNames.parse(style.name)
 
-      if (names.collection && names.groupName && names.styleName) {
-        const targetStyleId = get(targetCollection.text, [names.groupName, names.styleName, "id"].join("."))
+      if (names.theme && names.group && names.name) {
+        const targetStyleId = get(targetTheme.text, [names.group, names.name, "id"].join("."))
         return targetStyleId
       }
     }

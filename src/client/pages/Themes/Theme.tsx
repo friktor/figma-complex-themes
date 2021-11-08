@@ -14,15 +14,15 @@ interface IProps {
 }
 
 export function Theme({ item, row }: IProps) {
-  const onChangeCollectionName = useCallback((params: { value: string }) => {
+  const onChangeThemeName = useCallback((params: { value: string }) => {
     // @TODO:
   }, [])
 
-  const onCloneCollection = useCallback(() => {
+  const onCloneTheme = useCallback(() => {
     // @TODO:
   }, [])
 
-  const onRemoveCollection = useCallback(() => {
+  const onRemoveTheme = useCallback(() => {
     // @TODO:
   }, [])
 
@@ -39,11 +39,11 @@ export function Theme({ item, row }: IProps) {
     iconSize: 16,
 
     items: [{
-      onClick: onCloneCollection,
+      onClick: onCloneTheme,
       title: "Duplicate",
       icon: "Copy",
     }, {
-      onClick: onRemoveCollection,
+      onClick: onRemoveTheme,
       title: "Remove",
       icon: "Trash",
     }]
@@ -70,7 +70,7 @@ export function Theme({ item, row }: IProps) {
   return (
     <div key={row.key} style={row.style} className="theme">
       <Input
-        onChange={onChangeCollectionName}
+        onChange={onChangeThemeName}
         validator={/^[a-zA-Z]+$/g}
         value={item.theme}
         name="name"
