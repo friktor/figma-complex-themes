@@ -4,6 +4,7 @@ export interface Group {
 }
 
 export interface Collection<T> {
+  type: "theme" | "group"
   name: string
 
   groups: Record<string, Group>

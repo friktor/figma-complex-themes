@@ -12,20 +12,24 @@ interface IProps {
   row: ListRowProps
 
   item: {
-    type: "GROUP_HEADER"
+    type: "THEME_GROUP_HEADER"
     title: string
+
+    theme: string
     group: string
   }
 }
 
-export function Group({ item, row }: IProps) {
+export function ThemeGroup({ item, row }: IProps) {
   const searchQuery = useSelector(getSearchQuery)
   const dispatch = useDispatch()
-  const { group } = item
+  const { theme, group } = item
 
   const opened = useSelector((state: RootState) => {
     const hasSearch = searchQuery && searchQuery.length > 0
-    return state.themes.openedGroups[group] || hasSearch
+    const key = `${theme}:${group}`
+
+    return state.themes.openedGroups[key] || hasSearch
   })
 
   const onChange = useCallback((params: { value: string }) => {
@@ -46,8 +50,9 @@ export function Group({ item, row }: IProps) {
 
   const onToggle = useCallback(() => dispatch(setGroupOpened({
     opened: !opened,
+    theme,
     group,
-  })), [opened, group])
+  })), [opened, theme, group])
 
   return (
     <div key={row.key} style={row.style} className="group">

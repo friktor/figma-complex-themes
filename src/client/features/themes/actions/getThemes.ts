@@ -1,24 +1,28 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
-import { Collections } from "./types"
 import { RawPaintStyle, RawTextStyle } from "models"
+import { Collections } from "../types"
 import * as Style from "utils/style"
 import * as api from "client/api"
 
 const generateCollections = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>): Collections<T> => {
   const themes: Collections<T> = {}
 
-  const _addCollection = name => {
+  const _addCollection = (name, type: "theme" | "group") => {
     if (!themes[name]) {
       themes[name] = {
         groups: {},
         items: {},
+        type,
         name,
       }
     }
   }
 
-  const _addGroup = (collection, groupName) => {
+  const _addTheme = (name) => _addCollection(name, "theme")
+  const _addGroup = (name) => _addCollection(name, "group")
+
+  const _addThemeGroup = (collection, groupName) => {
     if (!themes[collection].groups[groupName]) {
       themes[collection].groups[groupName] = {
         name: groupName,
@@ -28,15 +32,26 @@ const generateCollections = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>)
   }
 
   const _addStyle = style => {
-    const { collection, groupName, id } = style.base
-    themes[collection].groups[groupName].ids.push(id)
-    themes[collection].items[id] = style
+    const { collection: theme, groupName: group, id } = (style as any).base
+    
+    if (theme) {
+      themes[theme].groups[group].ids.push(id)
+      themes[theme].items[id] = style
+    } else {
+      themes[group].items[id] = style
+    }
   }
 
   styles.forEach(style => {
-    const { collection, groupName } = (style as any).base
-    _addCollection(collection)
-    _addGroup(collection, groupName)
+    const { collection: theme, groupName: group } = (style as any).base
+
+    if (theme) {
+      _addTheme(theme)
+      _addThemeGroup(theme, group)
+    } else {
+      _addGroup(group)
+    }
+
     _addStyle(style)
   })
 

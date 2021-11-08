@@ -5,9 +5,10 @@ import { useDispatch, useSelector } from "react-redux"
 import { getFlatThemesList, getSelections } from "client/selectors"
 import { SelectPopup } from "client/components"
 import objectSwitch from "utils/objectSwitch"
+import { ThemeGroup } from "./ThemeGroup"
 import { Search } from "./Search"
-import { Theme } from "./Theme"
 import { Group } from "./Group"
+import { Theme } from "./Theme"
 import { Item } from "./Item"
 interface IProps { }
 
@@ -20,8 +21,9 @@ export function Themes(props: IProps) {
   const listRef = useRef()
 
   const getRowHeight = useCallback(({ index }: ListRowProps) => objectSwitch(list[index].type, {
-    THEME_HEADER: 40,
     GROUP_HEADER: 40,
+    THEME_HEADER: 40,
+    THEME_GROUP_HEADER: 40,
     STYLE_ITEM: 36,
   }), [themes])
 
@@ -29,6 +31,7 @@ export function Themes(props: IProps) {
     const item = list[rowProps.index]
 
     return objectSwitch(item.type, {
+      THEME_GROUP_HEADER: () => <ThemeGroup item={item} row={rowProps} />,
       THEME_HEADER: () => <Theme item={item} row={rowProps} />,
       GROUP_HEADER: () => <Group item={item} row={rowProps} />,
       STYLE_ITEM: () => <Item item={item} row={rowProps} />,
