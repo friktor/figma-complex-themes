@@ -1,7 +1,23 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, PayloadAction, Draft } from "@reduxjs/toolkit"
+
+// prettier-ignore
+import {
+  RemoveCollectionParams,
+  RemoveThemeGroupParams,
+  ClonedPayload,
+
+  renameCollection,
+  renameThemeGroup,
+  getCurrentThemes,
+  removeCollection,
+  removeThemeGroup,
+  cloneCollection,
+  cloneThemeGroup,
+  createStyle,
+} from "./actions"
 
 import { RawPaintStyle, RawStyle, RawTextStyle, SelectionEvent } from "models"
-import { getCurrentThemes, createStyle } from "./actions"
+import { denormalizeStyles } from "./actions/denormalize"
 import { Collections } from "./types"
 export * from "./actions"
 export * from "./types"
@@ -10,7 +26,7 @@ export interface ThemesState {
   paint: Collections<RawPaintStyle>
   text: Collections<RawTextStyle>
 
-  openedGroups: Record<string, boolean> 
+  openedGroups: Record<string, boolean>
   selections?: SelectionEvent[]
   search?: string
 }
@@ -46,15 +62,15 @@ const initialState: ThemesState = {
 
 const reducers = {
   // Utility
-  setSearchQuery(state, { payload }: PayloadAction<string>) {
-    state.search = payload  
+  setSearchQuery(state: Draft<ThemesState>, { payload }: PayloadAction<string>) {
+    state.search = payload
   },
 
-  setSelections(state, { payload }: PayloadAction<SelectionEvent[]>) {
+  setSelections(state: Draft<ThemesState>, { payload }: PayloadAction<SelectionEvent[]>) {
     state.selections = payload
   },
 
-  setGroupOpened(state, { payload }: PayloadAction<SetOpenedGroup>) {
+  setGroupOpened(state: Draft<ThemesState>, { payload }: PayloadAction<SetOpenedGroup>) {
     const { theme, group } = payload
     const key = [theme, group].filter(x => !!x).join(":")
 
@@ -66,7 +82,7 @@ const reducers = {
   },
 
   // Styles
-  createTheme(state, { payload }: PayloadAction<CreateTheme>) {
+  createTheme(state: Draft<ThemesState>, { payload }: PayloadAction<CreateTheme>) {
     if (!state[payload.type][payload.theme]) {
       state[payload.type][payload.theme] = {
         name: payload.theme,
@@ -77,7 +93,7 @@ const reducers = {
     }
   },
 
-  createGroup(state, { payload }: PayloadAction<CreateGroup>) {
+  createGroup(state: Draft<ThemesState>, { payload }: PayloadAction<CreateGroup>) {
     if (!state[payload.type][payload.group]) {
       state[payload.type][payload.group] = {
         name: payload.group,
@@ -88,7 +104,7 @@ const reducers = {
     }
   },
 
-  createThemeGroup(state, { payload }: PayloadAction<CreateThemeGroup>) {
+  createThemeGroup(state: Draft<ThemesState>, { payload }: PayloadAction<CreateThemeGroup>) {
     if (!state[payload.type][payload.theme].groups[payload.group]) {
       state[payload.type][payload.theme].groups[payload.group] = {
         name: payload.theme,
@@ -105,8 +121,8 @@ export const themesSlice = createSlice({
 
   extraReducers: {
     [getCurrentThemes.fulfilled.toString()]: (state, { payload }) => {
-      state.paint = payload.paint
-      state.text = payload.text
+      denormalizeStyles(payload.paint, state.paint)
+      denormalizeStyles(payload.text, state.text)
     },
 
     [createStyle.fulfilled.toString()]: (state, { payload }: PayloadAction<RawStyle>) => {
@@ -116,7 +132,7 @@ export const themesSlice = createSlice({
       if (theme) {
         const _createTheme = { type, theme }
         const _createThemeGroup = { ..._createTheme, group }
-  
+
         reducers.createTheme(state, { payload: _createTheme } as any)
         reducers.createThemeGroup(state, { payload: _createThemeGroup } as any)
 
@@ -125,12 +141,51 @@ export const themesSlice = createSlice({
       } else {
         const _createGroup = { type, group }
         reducers.createGroup(state, { payload: _createGroup } as any)
-        state[type][theme].items[id] = payload as any
+        state[type][group].items[id] = payload as any
       }
+    },
+
+    [removeCollection.fulfilled.toString()]: (state, { payload }: PayloadAction<RemoveCollectionParams>) => {
+      delete state[payload.type][payload.name]
+    },
+
+    [removeThemeGroup.fulfilled.toString()]: (state, { payload }: PayloadAction<RemoveThemeGroupParams>) => {
+      const collection = state[payload.type][payload.theme]
+
+      for (const id of collection.groups[payload.group].ids) {
+        delete collection.items[id]
+      }
+
+      delete collection.groups[payload.group]
+    },
+
+    [cloneCollection.fulfilled.toString()]: (state, { payload }: PayloadAction<ClonedPayload>) => {
+      denormalizeStyles(payload.styles, state[payload.type])
+    },
+
+    [cloneThemeGroup.fulfilled.toString()]: (state, { payload }: PayloadAction<ClonedPayload>) => {
+      denormalizeStyles(payload.styles, state[payload.type])
+    },
+
+    [renameCollection.fulfilled.toString()]: (state, { payload }: PayloadAction<ClonedPayload>) => {
+      denormalizeStyles(payload.styles, state[payload.type])
+    },
+
+    [renameThemeGroup.fulfilled.toString()]: (state, { payload }: PayloadAction<ClonedPayload>) => {
+      denormalizeStyles(payload.styles, state[payload.type])
     },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setSearchQuery, setSelections, setGroupOpened, createTheme, createThemeGroup } = themesSlice.actions
+// prettier-ignore
+export const {
+  createThemeGroup,
+  setSearchQuery,
+  setGroupOpened,
+  setSelections,
+  createTheme,
+  createGroup,
+} = themesSlice.actions
+
 export default themesSlice.reducer

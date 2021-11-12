@@ -35,16 +35,16 @@ export function Item({ item, row }: IProps) {
     // @TODO
   }, [style])
 
-  const onChange = React.useCallback((params: { value: string }) => {
-    // @TODO
-  }, [style])
+  const onChange = React.useCallback(
+    (params: { value: string }) => {
+      // @TODO
+    },
+    [style],
+  )
 
   const preview = objectSwitch(style.inner.type, {
     [StyleType.PAINT]: (
-      <PaintPreview
-        paints={(style.inner.properties as any).paints}
-        onDoubleClick={onSelectAllNodesWithStyle}
-      />
+      <PaintPreview paints={(style.inner.properties as any).paints} onDoubleClick={onSelectAllNodesWithStyle} />
     ),
     [StyleType.TEXT]: (
       <div className="text preview">
@@ -54,17 +54,12 @@ export function Item({ item, row }: IProps) {
   })
 
   return (
-    <div key={row.key} style={row.style} className="item">
+    <div key={row.key} style={row.style} className="item style">
       <div className="title">
         {preview}
 
         <div className="name">
-          <Input
-            value={style.base.styleName}
-            validator={/^[a-zA-Z]+$/g}
-            onChange={onChange}
-            name="style"
-          />
+          <Input value={style.base.name} validator={/^[a-zA-Z]+$/g} onChange={onChange} name="style" />
         </div>
       </div>
 

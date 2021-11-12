@@ -21,10 +21,13 @@ export function Layout({ children, route: currentRoute, setRoute }: IProps) {
     const props = {
       className: cx("tab", { active }),
       onClick: () => setRoute(route),
-      key: `tab-${route}-${active}`,
     }
 
-    return <div {...props}>{route}</div>
+    return (
+      <div key={`tab-${route}-${active}`} {...props}>
+        {route}
+      </div>
+    )
   })
 
   return (

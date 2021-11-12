@@ -60,11 +60,7 @@ export const deserializeToRawStyles = (themes: SerializedTheme) => {
       return out
     }
 
-  const _reducerThemes = (
-    out: RawDeserializedStyle[][][],
-    themeMap: SerializedCollection,
-    theme: string,
-  ) => {
+  const _reducerThemes = (out: RawDeserializedStyle[][][], themeMap: SerializedCollection, theme: string) => {
     const reducer = _reducerGroup(theme)
     const paints = reduceObject(themeMap.paint, reducer, [])
     const texts = reduceObject(themeMap.text, reducer, [])

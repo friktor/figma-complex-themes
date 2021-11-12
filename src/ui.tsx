@@ -2,7 +2,7 @@ import "reactjs-popup/dist/index.css"
 import "react-virtualized/styles.css"
 import "./client/assets/styles/main.sass"
 
-import React, { useEffect}  from "react"
+import React, { useEffect } from "react"
 import { Provider } from "react-redux"
 import * as ReactDOM from "react-dom"
 

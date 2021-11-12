@@ -18,11 +18,14 @@ export function Search() {
     setValue("")
   }, [])
 
-  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback((event) => {
-    if (event.key === "Enter") {
-      dispatch(setSearchQuery(value))
-    }
-  }, [value])
+  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
+    event => {
+      if (event.key === "Enter") {
+        dispatch(setSearchQuery(value))
+      }
+    },
+    [value],
+  )
 
   return (
     <div className="search">

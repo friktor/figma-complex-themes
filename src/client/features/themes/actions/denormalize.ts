@@ -1,13 +1,10 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
-
 import { RawPaintStyle, RawTextStyle } from "models"
 import { Collections } from "../types"
-import * as Style from "utils/style"
-import * as api from "client/api"
 
-const normalizeStyles = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>): Collections<T> => {
-  const themes: Collections<T> = {}
-
+export const denormalizeStyles = <T = RawPaintStyle | RawTextStyle>(
+  styles: Array<T>,
+  themes: Collections<T> = {},
+): Collections<T> => {
   const _addCollection = (name, type: "theme" | "group") => {
     if (!themes[name]) {
       themes[name] = {
@@ -19,8 +16,8 @@ const normalizeStyles = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>): Co
     }
   }
 
-  const _addTheme = (name) => _addCollection(name, "theme")
-  const _addGroup = (name) => _addCollection(name, "group")
+  const _addTheme = name => _addCollection(name, "theme")
+  const _addGroup = name => _addCollection(name, "group")
 
   const _addThemeGroup = (theme, group) => {
     if (!themes[theme].groups[group]) {
@@ -33,7 +30,7 @@ const normalizeStyles = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>): Co
 
   const _addStyle = style => {
     const { theme, group, id } = (style as any).base
-    
+
     if (theme) {
       themes[theme].groups[group].ids.push(id)
       themes[theme].items[id] = style
@@ -57,15 +54,3 @@ const normalizeStyles = <T = RawPaintStyle | RawTextStyle>(styles: Array<T>): Co
 
   return themes
 }
-
-export const getCurrentThemes = createAsyncThunk("themes/getCurrentThemes", async () => {
-  const response = await api.getRawStyles()
-
-  const paint = response?.paintStyles.map(Style.createStyleFromRaw)
-  const text = response?.textStyles.map(Style.createStyleFromRaw)
-
-  return {
-    paint: normalizeStyles(paint || []),
-    text: normalizeStyles(text || []),
-  }
-})

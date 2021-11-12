@@ -2,15 +2,15 @@ import { AutoSizer, List, ListRowProps } from "react-virtualized"
 import React, { useCallback, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
+import { createGroup, createTheme } from "client/features/themes"
 import { getFlatThemesList, getSelections } from "client/selectors"
 import { SelectPopup } from "client/components"
 import objectSwitch from "utils/objectSwitch"
-import { ThemeGroup } from "./ThemeGroup"
+import * as Divider from "./Divider"
+import * as Header from "./Header"
 import { Search } from "./Search"
-import { Group } from "./Group"
-import { Theme } from "./Theme"
 import { Item } from "./Item"
-interface IProps { }
+interface IProps {}
 
 export function Themes(props: IProps) {
   const [themeType, setThemeType] = useState<"paint" | "text">("paint")
@@ -20,34 +20,53 @@ export function Themes(props: IProps) {
   const list = themes[themeType]
   const listRef = useRef()
 
-  const getRowHeight = useCallback(({ index }: ListRowProps) => objectSwitch(list[index].type, {
-    GROUP_HEADER: 40,
-    THEME_HEADER: 40,
-    THEME_GROUP_HEADER: 40,
-    STYLE_ITEM: 36,
-  }), [themes])
+  const getRowHeight = useCallback(
+    ({ index }: ListRowProps) =>
+      objectSwitch(list[index].type, {
+        THEME_GROUP_HEADER: 36,
+        GROUP_HEADER: 36,
+        THEME_HEADER: 36,
 
-  const rowRenderer = useCallback((rowProps: ListRowProps) => {
-    const item = list[rowProps.index]
+        THEMES_DIVIDER: 36,
+        GROUPS_DIVIDER: 36,
 
-    return objectSwitch(item.type, {
-      THEME_GROUP_HEADER: () => <ThemeGroup item={item} row={rowProps} />,
-      THEME_HEADER: () => <Theme item={item} row={rowProps} />,
-      GROUP_HEADER: () => <Group item={item} row={rowProps} />,
-      STYLE_ITEM: () => <Item item={item} row={rowProps} />,
-    }, true)
-  }, [themes])
+        STYLE_ITEM: 34,
+      }),
+    [themes],
+  )
+
+  const rowRenderer = useCallback(
+    (rowProps: ListRowProps) => {
+      const item = list[rowProps.index]
+
+      return objectSwitch(
+        item.type,
+        {
+          THEME_GROUP_HEADER: () => <Header.ThemeGroup item={item} row={rowProps} />,
+          THEME_HEADER: () => <Header.Theme item={item} row={rowProps} />,
+          GROUP_HEADER: () => <Header.Group item={item} row={rowProps} />,
+
+          THEMES_DIVIDER: () => <Divider.Theme row={rowProps} />,
+          GROUPS_DIVIDER: () => <Divider.Group row={rowProps} />,
+
+          STYLE_ITEM: () => <Item item={item} row={rowProps} />,
+        },
+        true,
+      )
+    },
+    [themes],
+  )
 
   const onCreateTempGroup = React.useCallback(() => {
-    // @TPDP:
-  }, [])
+    dispatch(createGroup({ group: "Untitled", type: themeType }))
+  }, [themeType])
 
   const onCreateTempTheme = React.useCallback(() => {
-    // @TPDP:
+    dispatch(createTheme({ theme: "Untitled", type: themeType }))
   }, [])
 
   const onImportStyles = React.useCallback(() => {
-    // @TPDP:
+    // @TODO
   }, [])
 
   let importStylesTitle
@@ -56,7 +75,7 @@ export function Themes(props: IProps) {
       <>
         Import Styles
         <span style={{ opacity: 0.8, fontSize: 9, marginLeft: 2 }}>
-          (From {selections.map(({name}) => name).join(", ")})
+          (From {selections.map(({ name }) => name).join(", ")})
         </span>
       </>
     )
@@ -64,23 +83,43 @@ export function Themes(props: IProps) {
     importStylesTitle = (
       <>
         Import Styles
-        <span style={{ opacity: 0.8, fontSize: 9, marginLeft: 2 }}>
-          (Please select frames)
-        </span>
+        <span style={{ opacity: 0.8, fontSize: 9, marginLeft: 2 }}>(Please select frames)</span>
       </>
     )
   }
 
-  const actions = [{
-    onClick: onCreateTempGroup,
-    title: "Create Group",
-  }, {
-    onClick: onCreateTempTheme,
-    title: "Create Theme",
-  }, {
-    onClick: onImportStyles,
-    title: importStylesTitle,
-  }]
+  const actions = [
+    {
+      onClick: onCreateTempGroup,
+      title: "Create Group",
+    },
+    {
+      onClick: onCreateTempTheme,
+      title: "Create Theme",
+    },
+    {
+      onClick: onImportStyles,
+      title: importStylesTitle,
+    },
+  ]
+
+  const listProps = {
+    rowRenderer: rowRenderer,
+    rowHeight: getRowHeight,
+    rowCount: list.length,
+    overscanRowCount: 10,
+    className: "list",
+    ref: listRef,
+  }
+
+  const listCalculator = ({ width, height }) => (
+    <List
+      // height={height}
+      width={width}
+      height={520}
+      {...listProps}
+    />
+  )
 
   return (
     <div className="page themes">
@@ -88,30 +127,11 @@ export function Themes(props: IProps) {
         <Search />
 
         <div className="actions">
-          <SelectPopup
-            iconColor="#18a0fb"
-            items={actions}
-            iconSize={20}
-            icon="Plus"
-          />
+          <SelectPopup iconColor="#18a0fb" items={actions} iconSize={20} icon="Plus" />
         </div>
       </div>
 
-      <AutoSizer>
-        {({ width, height }) => (
-          <List
-            overscanRowCount={10}
-            className="list"
-            height={height}
-            width={width}
-            ref={listRef}
-
-            rowCount={list.length}
-            rowRenderer={rowRenderer}
-            rowHeight={getRowHeight}
-          />
-        )}
-      </AutoSizer>
+      <AutoSizer>{listCalculator}</AutoSizer>
     </div>
   )
 }

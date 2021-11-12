@@ -1,8 +1,8 @@
 import React from "react"
 
 interface IProps {
-  onDoubleClick?: () => void,
-  paints: Paint[],
+  onDoubleClick?: () => void
+  paints: Paint[]
 }
 
 export function PaintPreview({ paints, onDoubleClick }: IProps) {
@@ -15,23 +15,17 @@ export function PaintPreview({ paints, onDoubleClick }: IProps) {
       const { color, opacity } = paint as SolidPaint
       const background = rgba(color.r, color.g, color.b, opacity)
 
-      return (
-        <div
-          style={{ background, zIndex }}
-          key={`preview-layer-${index}`}
-          className="layer"
-        />
-      )
+      return <div style={{ background, zIndex }} key={`preview-layer-${index}`} className="layer" />
     } else if (type === "GRADIENT_LINEAR") {
       const { gradientStops, gradientTransform } = paint as GradientPaint
 
       // [[cos(angle), sin(angle), 0],
-      // [-sin(angle), cos(angle), 0]]            
+      // [-sin(angle), cos(angle), 0]]
 
       // crutch without offset support
       const angle = Math.asin(gradientTransform[0][1]) * (180 / Math.PI) + 90
 
-      const stops = gradientStops.map((stop) => {
+      const stops = gradientStops.map(stop => {
         const { color: _color } = stop
 
         const color = rgba(_color.r, _color.g, _color.b, _color.a)
@@ -41,21 +35,9 @@ export function PaintPreview({ paints, onDoubleClick }: IProps) {
 
       const background = `linear-gradient(${angle.toFixed(0)}deg, ${stops.join(",")})`
 
-      return (
-        <div
-          style={{ background, zIndex }}
-          key={`preview-layer-${index}`}
-          className="layer"
-        />
-      )
+      return <div style={{ background, zIndex }} key={`preview-layer-${index}`} className="layer" />
     } else {
-      return (
-        <div
-          style={{ background: "transparent" }}
-          key={`preview-layer-${index}`}
-          className="layer"
-        />
-      )
+      return <div style={{ background: "transparent" }} key={`preview-layer-${index}`} className="layer" />
     }
   })
 

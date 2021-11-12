@@ -46,9 +46,7 @@ export const createDraftStyle = (
   } as any
 }
 
-export const createStyleFromRaw = (
-  style: DeepMutable<PaintStyle | TextStyle>,
-): RawPaintStyle | RawTextStyle => {
+export const createStyleFromRaw = (style: DeepMutable<PaintStyle | TextStyle>): RawPaintStyle | RawTextStyle => {
   const names = styleNames.parse(style.name)
 
   const base: BaseProperties = {

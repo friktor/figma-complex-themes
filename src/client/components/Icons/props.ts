@@ -1,9 +1,9 @@
 export interface IconProps {
-    color?: string,
-    size?: number,
+  color?: string
+  size?: number
 }
 
 export const defaultProps: IconProps = {
-    color: "#000",
-    size: 20,
+  color: "#000",
+  size: 20,
 }

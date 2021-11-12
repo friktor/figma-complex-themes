@@ -1,5 +1,6 @@
 export * from "./MenuDots"
 export * from "./Search"
+export * from "./Folder"
 export * from "./Caret"
 export * from "./Brush"
 export * from "./Trash"

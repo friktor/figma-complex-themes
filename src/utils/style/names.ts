@@ -9,9 +9,7 @@ interface ParsedStylename {
   name: string
 }
 
-export const parse = (
-  fullname: string,
-): ParsedStylename => {
+export const parse = (fullname: string): ParsedStylename => {
   let result: any = {}
 
   const _names = _name => {

@@ -4,14 +4,14 @@ import objectSwitch from "utils/objectSwitch"
 
 export const processPaintStyle = async (style: RawPaintStyle): Promise<RawStyle> => {
   const { base, inner } = style
-  const { id, name } = base
+  const { id, fullname } = base
 
   const isDraft = id.includes("$temp")
   let paintStyle: PaintStyle
 
   // If founded exists style by unique name from drafted - replace it
   if (isDraft) {        
-    const styleByName = figma.getLocalPaintStyles().find(style => style.name === name)
+    const styleByName = figma.getLocalPaintStyles().find(style => style.name === fullname)
 
     if (styleByName) {
       paintStyle = styleByName
@@ -22,7 +22,7 @@ export const processPaintStyle = async (style: RawPaintStyle): Promise<RawStyle>
     paintStyle = figma.getStyleById(id) as any
   }
 
-  paintStyle.name = name
+  paintStyle.name = fullname
   paintStyle.paints = inner.properties.paints
 
   return Object.assign(style, { base: Object.assign(base, {
@@ -38,14 +38,14 @@ export const processPaintStyle = async (style: RawPaintStyle): Promise<RawStyle>
 // @TODO: need correct text styles settes with loaded styles
 export const processTextStyle = async (style: RawTextStyle): Promise<RawStyle> => {
   const { base, inner } = style
-  const { id, name } = base
+  const { id, fullname } = base
 
   const isDraft = id.includes("$temp")
   let textStyle: TextStyle
 
   // If founded exists style by unique name from drafted - replace it
   if (isDraft) {        
-    const styleByName = figma.getLocalTextStyles().find(style => style.name === name)
+    const styleByName = figma.getLocalTextStyles().find(style => style.name === fullname)
 
     if (styleByName) {
       textStyle = styleByName
@@ -56,7 +56,7 @@ export const processTextStyle = async (style: RawTextStyle): Promise<RawStyle> =
     textStyle = figma.getStyleById(id) as any
   }
 
-  textStyle.name = style.base.name
+  textStyle.name = style.base.fullname
 
   await figma.loadFontAsync(style.inner.properties.fontName)
 

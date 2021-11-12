@@ -44,7 +44,7 @@ export function get(obj, path, defaultValue = undefined) {
   return result === undefined || result === obj ? defaultValue : result
 }
 
-export function cloneDeep(item) {
+export function cloneDeep<T = any>(item: any): T {
   if (!item) {
     return item
   } // null, undefined values check
@@ -79,17 +79,6 @@ export function cloneDeep(item) {
           for (const i in item) {
             result[i] = cloneDeep(item[i])
           }
-        }
-      } else {
-        // depending what you would like here,
-        // just keep the reference, or create new object
-
-        /* eslint-disable-next-line */
-        if (false && item.constructor) {
-          // would not advice to do that, reason? Read below
-          result = new item.constructor()
-        } else {
-          result = item
         }
       }
     } else {
