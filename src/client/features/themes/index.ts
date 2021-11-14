@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, Draft } from "@reduxjs/toolkit"
 
-import { RawPaintStyle, RawStyle, RawTextStyle, SelectionEvent } from "models"
+import { Library, RawPaintStyle, RawStyle, RawTextStyle, SelectionEvent } from "models"
 import { denormalizeStyles } from "./actions/helpers"
 import { Collections } from "./types"
 export * from "./actions"
@@ -10,7 +10,7 @@ export * from "./types"
 import {
   renameCollection,
   renameThemeGroup,
-  getCurrentThemes,
+  getThemes,
   removeCollection,
   removeThemeGroup,
   updatePaintStyle,
@@ -22,22 +22,25 @@ import {
   removeStyle,
   createStyle,
   Payload,
+  getLibrary,
 } from "./actions"
 
 export interface ThemesState {
   paint: Collections<RawPaintStyle>
   text: Collections<RawTextStyle>
-
+  
   openedGroups: Record<string, boolean>
-  selections?: SelectionEvent[]
-  search?: string
-
+  selections: SelectionEvent[]
+  library: Library
+  
   editable?: RawStyle
+  search?: string
 }
 
 const initialState: ThemesState = {
   openedGroups: {},
   selections: [],
+  library: {},
 
   paint: {},
   text: {},
@@ -102,13 +105,25 @@ const reducers = {
 
   setEditableStyle(state: Draft<ThemesState>, { payload }: PayloadAction<RawStyle | undefined>) {
     state.editable = payload as Draft<RawStyle>
+  },
+
+  updatePaintWithEditable(state: Draft<ThemesState>, { payload }: PayloadAction<Payload.UpdatedStyles>) {
+    denormalizeStyles(payload.styles, state[payload.type])
+
+    if (state.editable) {
+      state.editable = payload.styles[0] as any
+    }
   }
 }
 
 const extraReducers = {
-  [getCurrentThemes.fulfilled.type]: (state: Draft<ThemesState>, { payload }) => {
+  [getThemes.fulfilled.type]: (state: Draft<ThemesState>, { payload }) => {
     denormalizeStyles(payload.paint, state.paint)
     denormalizeStyles(payload.text, state.text)
+  },
+
+  [getLibrary.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Library>) => {
+    state.library = payload
   },
 
   [createStyle.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<RawStyle>) => {
@@ -164,29 +179,9 @@ const extraReducers = {
   [cloneCollection.fulfilled.type]: reducers.insertRawStyles,
   [cloneThemeGroup.fulfilled.type]: reducers.insertRawStyles,
 
-  [addPaintStyle.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.UpdatedStyles>) => {
-    denormalizeStyles(payload.styles, state[payload.type])
-
-    if (state.editable) {
-      state.editable = payload.styles[0] as any
-    }
-  },
-
-  [updatePaintStyle.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.UpdatedStyles>) => {
-    denormalizeStyles(payload.styles, state[payload.type])
-
-    if (state.editable) {
-      state.editable = payload.styles[0] as any
-    }
-  },
-
-  [removePaintStyle.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.UpdatedStyles>) => {
-    denormalizeStyles(payload.styles, state[payload.type])
-
-    if (state.editable) {
-      state.editable = payload.styles[0] as any
-    }
-  },
+  [addPaintStyle.fulfilled.type]: reducers.updatePaintWithEditable,
+  [updatePaintStyle.fulfilled.type]: reducers.updatePaintWithEditable,
+  [removePaintStyle.fulfilled.type]: reducers.updatePaintWithEditable,
 }
 
 export const themesSlice = createSlice({

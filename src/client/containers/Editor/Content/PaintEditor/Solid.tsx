@@ -140,7 +140,6 @@ export function SolidItem(props: IProps) {
     event => {
       const intValue = parseInt(alpha as any)
       const isValid = intValue && intValue >= 0 && intValue <= 100
-      console.log(onBlurAlpha)
 
       if (!isValid) {
         setAlpha(props.paint.opacity * 100)

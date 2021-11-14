@@ -1,6 +1,7 @@
 export * as Payload from "./payload"
+export * from "./library"
 export * from "./rename"
-export * from "./loader"
+export * from "./theme"
 export * from "./clone"
 export * from "./crud"
 export * from "./style"

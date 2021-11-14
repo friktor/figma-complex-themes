@@ -57,23 +57,21 @@ main
     &.active
       color: #000
 
-    &:before
-      background-color: $primary-blue
-      transition: all 0.2s ease
-      position: absolute
-      content: ""
+  &:before
+    background-color: $primary-blue
+    transition: all 0.2s ease
+    position: absolute
+    content: ""
+    width: 65px
+    height: 2px
+    bottom: 0
+    left: 0
 
-      width: 65px
-      height: 2px
-
-      bottom: 0
-      left: 0
-
-    &.Theme:before
-      left: 0px
-    &.Redrawer:before
-      left: 82px
-    &.Library:before
-      left: 158px
-    &.StyleGuides:before
-      left: 240px
+  &.Theme:before
+    left: 0px
+  &.Redrawer:before
+    left: 82px
+  &.Library:before
+    left: 158px
+  &.StyleGuides:before
+    left: 240px
