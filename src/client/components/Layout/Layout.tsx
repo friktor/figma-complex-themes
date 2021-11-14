@@ -1,5 +1,9 @@
+import { useSelector } from "react-redux"
 import * as React from "react"
 import cx from "classnames"
+
+import { getEditableStyle } from "client/selectors"
+import { Editor } from "client/containers"
 
 export enum Route {
   Redrawer = "Redrawer",
@@ -15,6 +19,8 @@ interface IProps {
 }
 
 export function Layout({ children, route: currentRoute, setRoute }: IProps) {
+  const editable = useSelector(getEditableStyle)
+
   const tabs = [Route.Themes, Route.Redrawer, Route.Library].map(route => {
     const active = currentRoute === route
 
@@ -31,10 +37,13 @@ export function Layout({ children, route: currentRoute, setRoute }: IProps) {
   })
 
   return (
-    <div className={"layout"}>
-      <div className={cx("tabs", currentRoute)}>{tabs}</div>
-
-      <main>{children}</main>
-    </div>
+    <>
+      <div className={cx("layout", { blured: !!editable })}>
+        <div className={cx("tabs", currentRoute)}>{tabs}</div>
+        <main>{children}</main>
+      </div>
+      
+      <Editor />
+    </>
   )
 }

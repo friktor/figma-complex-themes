@@ -37,7 +37,6 @@
     "react-modal": "^3.12.1",
     "react-redux": "^7.2.2",
     "react-spinners": "^0.10.4",
-    "react-swipeable-bottom-sheet": "^1.1.2",
     "react-virtualized": "^9.22.3",
     "reactjs-popup": "^2.0.4",
     "redux-logger": "^3.0.6"

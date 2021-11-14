@@ -1,53 +1,28 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
+import { removeCollection, removeStyle, removeThemeGroup } from "./crud"
 import { RootState } from "client/features"
+import { updateStylename } from "./helpers"
 import { cloneDeep } from "utils/helpers"
-import { removeCollection, removeThemeGroup } from "./crud"
-import { styleNames } from "utils/style"
 import { Collection } from "../types"
+import * as Payload from "./payload"
 import * as api from "client/api"
 import { RawStyle } from "models"
 
 const { values } = Object
 
-interface RenameCollectionParams {
-  type: "paint" | "text"
-  old: string // old name
-  new: string // new name
-}
-
-interface RenameThemeGroupParams {
-  type: "paint" | "text"
-  theme: string // source theme
-  group: string // source group
-
-  new: string // cloned theme group name
-}
-
 const renameStyleCollection = (name: string) => (raw: RawStyle) => {
-  const style = cloneDeep(raw)
-
-  if (style.base.theme) {
-    style.base.theme = name
-  } else {
-    style.base.group = name
-  }
-
-  style.base.fullname = styleNames.generate(style.base.theme, style.base.group, style.base.name)
-  return style
+  const key = raw.base.theme ? "theme" : "group"
+  return updateStylename(cloneDeep(raw), { [key]: name })
 }
 
 const renameStyleThemeGroup = (name: string) => (raw: RawStyle) => {
-  const style = cloneDeep(raw)
-  style.base.group = name
-
-  style.base.fullname = styleNames.generate(style.base.theme, style.base.group, style.base.name)
-  return style
+  return updateStylename(cloneDeep(raw), { group: name })
 }
 
-export const renameCollection = createAsyncThunk<any, any, { state: RootState }>(
+export const renameCollection = createAsyncThunk<Payload.UpdatedStyles, Payload.RenameCollection, { state: RootState }>(
   "themes/renameCollection",
-  async ({ type, ...options }: RenameCollectionParams, { getState, dispatch }): Promise<any> => {
+  async ({ type, ...options }, { getState, dispatch }) => {
     const state = getState()
     const collection = state.themes[type][options.old] as Collection<RawStyle>
 
@@ -59,16 +34,13 @@ export const renameCollection = createAsyncThunk<any, any, { state: RootState }>
       payload: { name: options.old, type },
     })
 
-    return {
-      styles,
-      type,
-    }
+    return { styles, type }
   },
 )
 
-export const renameThemeGroup = createAsyncThunk<any, any, { state: RootState }>(
+export const renameThemeGroup = createAsyncThunk<Payload.UpdatedStyles, Payload.RenameThemeGroup, { state: RootState }>(
   "themes/renameThemeGroup",
-  async ({ type, ...options }: RenameThemeGroupParams, { getState, dispatch }): Promise<any> => {
+  async ({ type, ...options }, { getState, dispatch }) => {
     const state = getState()
     const collection = state.themes[type]?.[options.theme]
     const groupIds = collection?.groups[options.group].ids
@@ -85,8 +57,32 @@ export const renameThemeGroup = createAsyncThunk<any, any, { state: RootState }>
       payload: { theme: options.theme, group: options.group, type },
     })
 
+    return { styles, type }
+  },
+)
+
+export const renameStyle = createAsyncThunk<Payload.UpdatedStyles, Payload.RenameStyle, { state: RootState }>(
+  "themes/renameStyle",
+  async (payload, { getState, dispatch }) => {
+    const { type, collection, names, id } = payload
+    const state = getState()
+
+    const style = cloneDeep(state.themes[type]?.[collection].items[id])
+    updateStylename(style, names)
+
+    dispatch({
+      type: removeStyle.fulfilled.type,
+      payload: {
+        type: payload.type,
+        id: payload.id,
+        collection,
+      },
+    })
+
+    const updated = await api.syncThemeStyle(style)
+
     return {
-      styles,
+      styles: [updated],
       type,
     }
   },

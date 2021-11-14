@@ -1,179 +1,173 @@
-.editor
-    flex-direction: column
-    background: #FFF
-    display: flex
+.editor-modal
+  position: absolute
+  bottom: 0
+  right: 0
+  left: 0
+  top: 0
 
+  &-overlay
+    background-color: transparentize(#000, 0.8)
     height: 100%
     width: 100%
 
-    & > .header
-        border-bottom: 1px solid rgba(0,0,0, 0.05)
-        justify-content: space-between
-        align-items: center
-        overflow: hidden
-        display: flex
+  .editor
+    position: absolute
+    bottom: 0
+    right: 0
+    left: 0
 
-        padding: 0 16px
-        height: 36px
+.editor
+  height: 360px
 
-        .names
-            justify-content: flex-start
-            align-items: center
-            display: flex
+  flex-direction: column
+  display: flex
 
-            .group, .style
-                cursor: pointer
+  .header
+    background: #FFF
+    padding: 0 16px
+    height: 50px
 
-                span, input
-                    color: transparentize(#000, 0.2)
-                    font-weight: 400
-                    font-size: 11px
-                
-                input
-                    width: calc(260px - 26px)
-                    border: none
-                    padding: 0
+    justify-content: flex-start
+    align-items: center
+    display: flex
 
-                    &:focus
-                        outline: none
-            span
-                color: transparentize(#000, 0.6)
-                user-select: none
-                font-weight: 400
-                font-size: 11px
-                margin: 0 2px
-        
-        .actions
-            display: flex
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05)
+    border-top: 1px solid rgba(0, 0, 0, 0.1)
 
-            .action
-                border: 1px solid rgba(0,0,0, 0.05)
-                color: transparentize(#000, 0.35)
-                background: transparent
-                user-select: none
-                padding: 3px 6px
-                font-weight: 400
-                font-size: 11px
-                cursor: pointer
-            
-            .close
-                justify-content: center
-                align-items: center
-                display: flex
+    .names
+      margin-left: 10px
 
-                margin-left: 10px
-                cursor: pointer
-                opacity: 0.6
+      align-items: center
+      display: flex
 
-                transition: all 0.25s ease
-                border-radius: 4px
-                height: 26px
-                width: 26px
+      .divider
+        user-select: none
+        margin: 0 3px
 
-                &:hover
-                    background-color: transparentize(#000, 0.95)
-                    opacity: 1
-
-    & > .content
-        overflow: hidden
-        flex: 1
-
-        .style-editor-actions
-            justify-content: center
-            display: flex
-
-            margin-top: 14px
-
-            .action
-                border: 1px solid rgba(0,0,0, 0.1)
-                transition: all .2s ease
-                
-                align-items: center
-                display: flex
-
-                border-radius: 3px
-                padding: 4px 8px
-                user-select: none
-                cursor: pointer
-
-                &.active, &:hover
-                    background-color: transparentize($primary-blue, 0.9)
-
-                span
-                    margin-left: 10px
-
-                    color: rgba(0,0,0, 0.7)
-                    line-height: 12px
-                    font-size: 12px
-
-.paint-editor
+  .content
+    background-color: #FFF
     flex-direction: column
     display: flex
     flex: 1
 
-    .items
-        flex-direction: column
+.editor .paint-editor
+  flex-direction: column
+  display: flex
+  flex: 1
+
+  max-height: 310px
+
+  .items
+    flex-direction: column
+    overflow-y: scroll
+    display: flex
+    
+    min-height: 270px
+    flex: 0 1 auto
+
+    &::-webkit-scrollbar
+      width: 2px
+
+    &::-webkit-scrollbar-track
+      background: #FFF
+
+    &::-webkit-scrollbar-thumb
+      border-radius: 2px
+      background: #E0E0E0
+
+  .button.add
+    border-top: 1px solid #03A9F4
+    transition: all 0.25s ease
+    user-select: none
+    cursor: pointer
+    color: #03A9F4
+    height: 36px
+    flex: 0 0 auto
+
+    justify-content: center
+    align-items: center
+    display: flex
+
+    font-weight: 500
+    font-size: 12px
+
+    &:hover
+      border-color: darken(#03A9F4, 5%)
+      color: darken(#03A9F4, 5%)
+
+  .paint
+    border-bottom: 1px solid transparentize(#000, 0.95)
+    position: relative
+
+    .remove
+      transition: all 0.25s ease
+      border-radius: 0 0 0 5px
+      position: absolute
+      height: 24px
+      width: 24px
+      right: 0px
+      top: 0px
+
+      justify-content: center
+      align-items: center
+      display: flex
+
+      user-select: none
+      cursor: pointer
+
+      &:hover
+        background-color: transparentize(#000, 0.85)
+
+
+    .solid-color
+      flex-direction: column
+      display: flex
+
+      margin: 25px 16px 20px 16px
+
+      .part
+        border: 1px solid transparentize(#000, 0.95)
+        border-radius: 5px
+
+        align-items: center
         display: flex
 
-        .item
-            flex-direction: column
-            display: flex
+        margin: 0 5px
+        height: 34px
 
-            padding-bottom: 16px
+        &.error
+          border-color: #EF5350
 
-            &:first-child > .header
-                border: none
+        label
+          color: transparentize(#000, 0.4)
+          margin: 0 8px 0 10px
+          font-weight: 500
+          font-size: 14px
 
-            & > .header
-                border-top: 1px solid rgba(0,0,0, 0.05)
-                padding: 6px 16px 6px 10px
+        input
+          font-size: 14px
+          outline: none
+          border: none
+          height: 32px
+          width: 100%
 
-                justify-content: space-between
-                align-items: center
-                display: flex
+        &:first-child
+          margin-left: 0
+        &:last-child
+          margin-right: 0
 
-                .remove
-                    border: 1px solid transparent
-                    transition: all .2s ease
-                    background: transparent
-                    border-radius: 3px
-                    
-                    height: 24px
-                    width: 24px
-                    
-                    flex-direction: row-reverse
-                    justify-content: center
-                    align-items: center
-                    display: flex
+      .hex
+        justify-content: space-between
+        display: flex
 
-                    user-select: none
-                    cursor: pointer
-                    outline: none
-                    
-                .switch
-                    border: 1px solid transparent
-                    transition: all .2s ease
-                    background: transparent
-                    border-radius: 3px
-                    padding: 4px 6px
-                    
-                    flex-direction: row-reverse
-                    align-items: center
-                    display: flex
+        .part
+          &:last-child
+            width: 40%
+          &:first-child
+            width: 60%
 
-                    user-select: none
-                    cursor: pointer
-                    outline: none
-                    
-                    &:hover
-                        border-color: rgba(0,0,0, 0.1)
-                    
-                    span
-                        color: rgba(0,0,0, 0.8)
-                        margin-right: 4px
-                        font-weight: 400
-                        font-size: 11px
+      .rgba
+        justify-content: space-between
+        display: flex
 
-                    svg
-                        margin-bottom: -1px
-                    
+        margin-top: 14px

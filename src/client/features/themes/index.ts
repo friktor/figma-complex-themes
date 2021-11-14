@@ -1,26 +1,28 @@
 import { createSlice, PayloadAction, Draft } from "@reduxjs/toolkit"
 
+import { RawPaintStyle, RawStyle, RawTextStyle, SelectionEvent } from "models"
+import { denormalizeStyles } from "./actions/helpers"
+import { Collections } from "./types"
+export * from "./actions"
+export * from "./types"
+
 // prettier-ignore
 import {
-  RemoveCollectionParams,
-  RemoveThemeGroupParams,
-  ClonedPayload,
-
   renameCollection,
   renameThemeGroup,
   getCurrentThemes,
   removeCollection,
   removeThemeGroup,
+  updatePaintStyle,
+  removePaintStyle,
   cloneCollection,
   cloneThemeGroup,
+  addPaintStyle,
+  renameStyle,
+  removeStyle,
   createStyle,
+  Payload,
 } from "./actions"
-
-import { RawPaintStyle, RawStyle, RawTextStyle, SelectionEvent } from "models"
-import { denormalizeStyles } from "./actions/denormalize"
-import { Collections } from "./types"
-export * from "./actions"
-export * from "./types"
 
 export interface ThemesState {
   paint: Collections<RawPaintStyle>
@@ -29,27 +31,8 @@ export interface ThemesState {
   openedGroups: Record<string, boolean>
   selections?: SelectionEvent[]
   search?: string
-}
 
-interface SetOpenedGroup {
-  // type: "paint" | "text"
-  opened?: boolean
-  group: string
-  theme?: string
-}
-
-interface CreateTheme {
-  type: string | "paint" | "text"
-  theme: string
-}
-
-interface CreateGroup {
-  type: string | "paint" | "text"
-  group: string
-}
-
-interface CreateThemeGroup extends CreateTheme {
-  group: string
+  editable?: RawStyle
 }
 
 const initialState: ThemesState = {
@@ -70,7 +53,7 @@ const reducers = {
     state.selections = payload
   },
 
-  setGroupOpened(state: Draft<ThemesState>, { payload }: PayloadAction<SetOpenedGroup>) {
+  setGroupOpened(state: Draft<ThemesState>, { payload }: PayloadAction<Payload.SetOpenedGroup>) {
     const { theme, group } = payload
     const key = [theme, group].filter(x => !!x).join(":")
 
@@ -82,7 +65,7 @@ const reducers = {
   },
 
   // Styles
-  createTheme(state: Draft<ThemesState>, { payload }: PayloadAction<CreateTheme>) {
+  createTheme(state: Draft<ThemesState>, { payload }: PayloadAction<Payload.CreateTheme>) {
     if (!state[payload.type][payload.theme]) {
       state[payload.type][payload.theme] = {
         name: payload.theme,
@@ -93,7 +76,7 @@ const reducers = {
     }
   },
 
-  createGroup(state: Draft<ThemesState>, { payload }: PayloadAction<CreateGroup>) {
+  createGroup(state: Draft<ThemesState>, { payload }: PayloadAction<Payload.CreateGroup>) {
     if (!state[payload.type][payload.group]) {
       state[payload.type][payload.group] = {
         name: payload.group,
@@ -104,7 +87,7 @@ const reducers = {
     }
   },
 
-  createThemeGroup(state: Draft<ThemesState>, { payload }: PayloadAction<CreateThemeGroup>) {
+  createThemeGroup(state: Draft<ThemesState>, { payload }: PayloadAction<Payload.CreateThemeGroup>) {
     if (!state[payload.type][payload.theme].groups[payload.group]) {
       state[payload.type][payload.theme].groups[payload.group] = {
         name: payload.theme,
@@ -112,74 +95,113 @@ const reducers = {
       }
     }
   },
+
+  insertRawStyles(state: Draft<ThemesState>, { payload }: PayloadAction<Payload.UpdatedStyles>) {
+    denormalizeStyles(payload.styles, state[payload.type])
+  },
+
+  setEditableStyle(state: Draft<ThemesState>, { payload }: PayloadAction<RawStyle | undefined>) {
+    state.editable = payload as Draft<RawStyle>
+  }
+}
+
+const extraReducers = {
+  [getCurrentThemes.fulfilled.type]: (state: Draft<ThemesState>, { payload }) => {
+    denormalizeStyles(payload.paint, state.paint)
+    denormalizeStyles(payload.text, state.text)
+  },
+
+  [createStyle.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<RawStyle>) => {
+    const { theme, group, id } = payload.base
+    const type = payload.inner.type.toLowerCase() as "paint" | "text"
+
+    if (theme) {
+      const _createTheme = { type, theme }
+      const _createThemeGroup = { ..._createTheme, group }
+
+      reducers.createTheme(state, { payload: _createTheme } as any)
+      reducers.createThemeGroup(state, { payload: _createThemeGroup } as any)
+
+      state[type][theme].items[id] = payload as any
+      state[type][theme].groups[group].ids.push(id)
+    } else {
+      const _createGroup = { type, group }
+      reducers.createGroup(state, { payload: _createGroup } as any)
+      state[type][group].items[id] = payload as any
+    }
+  },
+
+  [removeCollection.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.RemoveCollection>) => {
+    delete state[payload.type][payload.name]
+  },
+
+  [removeThemeGroup.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.RemoveThemeGroup>) => {
+    const collection = state[payload.type][payload.theme]
+
+    for (const id of collection.groups[payload.group].ids) {
+      delete collection.items[id]
+    }
+
+    delete collection.groups[payload.group]
+  },
+
+  [removeStyle.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.RemoveStyle>) => {
+    const collection = state[payload.type][payload.collection]
+    const style = collection.items[payload.id]
+
+    if (style.base.theme) {
+      const { ids } = collection.groups[style.base.group]
+      collection.groups[style.base.group].ids = ids.filter(id => id !== style.base.id)
+    }
+
+    delete collection.items[style.base.id]
+  },
+
+  [renameCollection.fulfilled.type]: reducers.insertRawStyles,
+  [renameThemeGroup.fulfilled.type]: reducers.insertRawStyles,
+  [renameStyle.fulfilled.type]: reducers.insertRawStyles,
+
+  [cloneCollection.fulfilled.type]: reducers.insertRawStyles,
+  [cloneThemeGroup.fulfilled.type]: reducers.insertRawStyles,
+
+  [addPaintStyle.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.UpdatedStyles>) => {
+    denormalizeStyles(payload.styles, state[payload.type])
+
+    if (state.editable) {
+      state.editable = payload.styles[0] as any
+    }
+  },
+
+  [updatePaintStyle.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.UpdatedStyles>) => {
+    denormalizeStyles(payload.styles, state[payload.type])
+
+    if (state.editable) {
+      state.editable = payload.styles[0] as any
+    }
+  },
+
+  [removePaintStyle.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.UpdatedStyles>) => {
+    denormalizeStyles(payload.styles, state[payload.type])
+
+    if (state.editable) {
+      state.editable = payload.styles[0] as any
+    }
+  },
 }
 
 export const themesSlice = createSlice({
   name: "themes",
   initialState,
+
+  extraReducers,
   reducers,
-
-  extraReducers: {
-    [getCurrentThemes.fulfilled.toString()]: (state, { payload }) => {
-      denormalizeStyles(payload.paint, state.paint)
-      denormalizeStyles(payload.text, state.text)
-    },
-
-    [createStyle.fulfilled.toString()]: (state, { payload }: PayloadAction<RawStyle>) => {
-      const { theme, group, id } = payload.base
-      const type = payload.inner.type.toLowerCase() as "paint" | "text"
-
-      if (theme) {
-        const _createTheme = { type, theme }
-        const _createThemeGroup = { ..._createTheme, group }
-
-        reducers.createTheme(state, { payload: _createTheme } as any)
-        reducers.createThemeGroup(state, { payload: _createThemeGroup } as any)
-
-        state[type][theme].items[id] = payload as any
-        state[type][theme].groups[group].ids.push(id)
-      } else {
-        const _createGroup = { type, group }
-        reducers.createGroup(state, { payload: _createGroup } as any)
-        state[type][group].items[id] = payload as any
-      }
-    },
-
-    [removeCollection.fulfilled.toString()]: (state, { payload }: PayloadAction<RemoveCollectionParams>) => {
-      delete state[payload.type][payload.name]
-    },
-
-    [removeThemeGroup.fulfilled.toString()]: (state, { payload }: PayloadAction<RemoveThemeGroupParams>) => {
-      const collection = state[payload.type][payload.theme]
-
-      for (const id of collection.groups[payload.group].ids) {
-        delete collection.items[id]
-      }
-
-      delete collection.groups[payload.group]
-    },
-
-    [cloneCollection.fulfilled.toString()]: (state, { payload }: PayloadAction<ClonedPayload>) => {
-      denormalizeStyles(payload.styles, state[payload.type])
-    },
-
-    [cloneThemeGroup.fulfilled.toString()]: (state, { payload }: PayloadAction<ClonedPayload>) => {
-      denormalizeStyles(payload.styles, state[payload.type])
-    },
-
-    [renameCollection.fulfilled.toString()]: (state, { payload }: PayloadAction<ClonedPayload>) => {
-      denormalizeStyles(payload.styles, state[payload.type])
-    },
-
-    [renameThemeGroup.fulfilled.toString()]: (state, { payload }: PayloadAction<ClonedPayload>) => {
-      denormalizeStyles(payload.styles, state[payload.type])
-    },
-  },
 })
 
 // Action creators are generated for each case reducer function
 // prettier-ignore
 export const {
+  setEditableStyle,
+  insertRawStyles,
   createThemeGroup,
   setSearchQuery,
   setGroupOpened,

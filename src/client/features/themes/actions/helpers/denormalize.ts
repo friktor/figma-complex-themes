@@ -1,5 +1,5 @@
 import { RawPaintStyle, RawTextStyle } from "models"
-import { Collections } from "../types"
+import { Collections } from "../../types"
 
 export const denormalizeStyles = <T = RawPaintStyle | RawTextStyle>(
   styles: Array<T>,

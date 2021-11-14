@@ -1,8 +1,10 @@
 import { ListRowProps } from "react-virtualized"
-import React from "react"
+import React, { useCallback } from "react"
+import { useDispatch } from "react-redux"
 
+import { removeStyle, renameStyle, setEditableStyle } from "client/features/themes"
+import { Icons, Input, PaintPreview, TextPreview } from "client/components"
 import { RawPaintStyle, RawTextStyle, StyleType } from "models"
-import { Icons, Input, PaintPreview } from "client/components"
 import objectSwitch from "utils/objectSwitch"
 import * as api from "client/api"
 
@@ -10,47 +12,59 @@ interface IProps {
   row: ListRowProps
 
   item: {
-    type: "STYLE_ITEM"
     style: RawPaintStyle | RawTextStyle
-    theme: string
+    styleType: "text" | "paint"
+    type: "STYLE_ITEM"
+    theme?: string
     group: string
     id: string
   }
 }
 
 export function Item({ item, row }: IProps) {
+  const dispatch = useDispatch()
   const { style } = item
+  const { inner } = style as any
 
-  const onSelectAllNodesWithStyle = React.useCallback(() => {
+  const onClickPreview = useCallback(() => {
     if (!style.base.id.includes("$temp")) {
       api.selectAllFramesByStyle(style.base.id)
     }
   }, [])
 
-  const onOpenEditor = React.useCallback(() => {
-    // @TODO
-  }, [style])
+  const onOpenEditor = useCallback(() => {
+    dispatch(setEditableStyle(item.style as any))
+  }, [item])
 
-  const onRemoveStyle = React.useCallback(() => {
-    // @TODO
-  }, [style])
+  const onRemoveStyle = useCallback(() => {
+    dispatch(
+      removeStyle({
+        collection: item.theme ? item.theme : item.group,
+        type: item.styleType,
+        id: style.base.id,
+      }),
+    )
+  }, [item, style])
 
-  const onChange = React.useCallback(
+  const onChangeName = useCallback(
     (params: { value: string }) => {
-      // @TODO
+      dispatch(
+        renameStyle({
+          collection: item.theme ? item.theme : item.group,
+          type: item.styleType,
+          id: item.id,
+          names: {
+            name: params.value,
+          },
+        }),
+      )
     },
-    [style],
+    [item],
   )
 
   const preview = objectSwitch(style.inner.type, {
-    [StyleType.PAINT]: (
-      <PaintPreview paints={(style.inner.properties as any).paints} onDoubleClick={onSelectAllNodesWithStyle} />
-    ),
-    [StyleType.TEXT]: (
-      <div className="text preview">
-        <span>T</span>
-      </div>
-    ),
+    [StyleType.PAINT]: <PaintPreview paints={inner.properties.paints} onDoubleClick={onClickPreview} />,
+    [StyleType.TEXT]: <TextPreview />,
   })
 
   return (
@@ -59,7 +73,7 @@ export function Item({ item, row }: IProps) {
         {preview}
 
         <div className="name">
-          <Input value={style.base.name} validator={/^[a-zA-Z]+$/g} onChange={onChange} name="style" />
+          <Input value={style.base.name} validator={/^[a-zA-Z]+$/g} onChange={onChangeName} name="style" />
         </div>
       </div>
 

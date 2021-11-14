@@ -2,60 +2,71 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import { createDraftStyle } from "utils/style"
 import { RootState } from "client/features"
-import { StyleType } from "models"
+import * as Payload from "./payload"
+import { RawStyle } from "models"
 import * as api from "client/api"
 
 const { keys } = Object
 
-export interface CreateStyleParams {
-  styleType: StyleType
-  theme?: string
-  group?: string
-  name?: string
-}
+export const createStyle = createAsyncThunk<RawStyle, Payload.CreateStyle, { state: RootState }>(
+  "themes/createStyle",
+  async payload => {
+    const style = await api.syncThemeStyle(
+      createDraftStyle(payload.theme, payload.group, payload.name, payload.styleType),
+    )
 
-export interface RemoveCollectionParams {
-  type: "paint" | "text"
-  name: string
-}
-
-export interface RemoveThemeGroupParams {
-  type: "paint" | "text"
-  theme: string
-  group: string
-}
-
-export const createStyle = createAsyncThunk("themes/createStyle", async (payload: CreateStyleParams) => {
-  const style = await api.syncThemeStyle(
-    createDraftStyle(payload.theme, payload.group, payload.name, payload.styleType),
-  )
-
-  return style
-})
-
-// remove "theme" or "group"
-export const removeCollection = createAsyncThunk<any, any, { state: RootState }>(
-  "themes/removeCollection",
-  async (payload: RemoveCollectionParams, { getState }) => {
-    const state = getState()
-
-    const collection = state.themes[payload.type][payload.name]
-    const tasks = keys(collection.items).map(id => api.removeThemeStyle(id))
-    Promise.all(tasks)
-
-    return payload
+    return style
   },
 )
 
-export const removeThemeGroup = createAsyncThunk<any, any, { state: RootState }>(
-  "themes/removeThemeGroup",
-  async (payload: RemoveThemeGroupParams, { getState }) => {
+// remove "theme" or "group"
+export const removeCollection = createAsyncThunk<
+  Payload.RemoveCollection,
+  Payload.RemoveCollection,
+  { state: RootState }
+>("themes/removeCollection", async (payload, { getState }) => {
+  const state = getState()
+
+  const collection = state.themes[payload.type][payload.name]
+  const tasks = keys(collection.items).map(id => api.removeThemeStyle(id))
+  const removed = keys(collection.items)
+  Promise.all(tasks)
+
+  return {
+    ...payload,
+    removed,
+  }
+})
+
+export const removeThemeGroup = createAsyncThunk<
+  Payload.RemoveThemeGroup,
+  Payload.RemoveThemeGroup,
+  { state: RootState }
+>("themes/removeThemeGroup", async (payload, { getState }) => {
+  const state = getState()
+
+  const group = state.themes[payload.type][payload.theme].groups[payload.group]
+  const tasks = group.ids.map(id => api.removeThemeStyle(id))
+  const removed = group.ids
+  Promise.all(tasks)
+
+  return {
+    ...payload,
+    removed,
+  }
+})
+
+export const removeStyle = createAsyncThunk<Payload.RemoveStyle, Payload.RemoveStyle, { state: RootState }>(
+  "themes/removeStyle",
+  async (payload, { getState }) => {
     const state = getState()
 
-    const group = state.themes[payload.type][payload.theme].groups[payload.group]
-    const tasks = group.ids.map(id => api.removeThemeStyle(id))
-    Promise.all(tasks)
+    const style = state.themes[payload.type]?.[payload.collection].items[payload.id]
+    await api.removeThemeStyle(style.base.id)
 
-    return payload
+    return {
+      ...payload,
+      removed: [style.base.id],
+    }
   },
 )

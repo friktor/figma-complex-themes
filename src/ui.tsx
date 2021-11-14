@@ -8,7 +8,7 @@ import * as ReactDOM from "react-dom"
 
 import { registerSyncSelectionsService } from "./client/services"
 import { App } from "./client/containers"
-import store from "./client/store"
+import { store } from "./client/store"
 
 function Root() {
   useEffect(() => {

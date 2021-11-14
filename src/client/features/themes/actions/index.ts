@@ -1,4 +1,6 @@
+export * as Payload from "./payload"
 export * from "./rename"
 export * from "./loader"
 export * from "./clone"
 export * from "./crud"
+export * from "./style"

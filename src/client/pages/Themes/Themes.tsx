@@ -1,4 +1,4 @@
-import { AutoSizer, List, ListRowProps } from "react-virtualized"
+import { AutoSizer, List, ListRowProps, Size } from "react-virtualized"
 import React, { useCallback, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
@@ -112,10 +112,17 @@ export function Themes(props: IProps) {
     ref: listRef,
   }
 
-  const listCalculator = ({ width, height }) => (
+  const actionsProps = {
+    iconColor: "#18a0fb",
+    items: actions,
+    iconSize: 20,
+    icon: "Plus",
+  }
+
+  const listCalculator = (size: Size): React.ReactNode => (
     <List
-      // height={height}
-      width={width}
+      // height={size.height}
+      width={size.width}
       height={520}
       {...listProps}
     />
@@ -127,11 +134,11 @@ export function Themes(props: IProps) {
         <Search />
 
         <div className="actions">
-          <SelectPopup iconColor="#18a0fb" items={actions} iconSize={20} icon="Plus" />
+          <SelectPopup {...actionsProps} />
         </div>
       </div>
 
-      <AutoSizer>{listCalculator}</AutoSizer>
+      <AutoSizer children={listCalculator} />
     </div>
   )
 }
