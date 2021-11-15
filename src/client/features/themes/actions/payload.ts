@@ -114,6 +114,6 @@ export interface UpdatePaintStyle {
 export interface RemovePaintStyle {
   collection: string
   id: string
-  
+
   index: number
 }

@@ -24,11 +24,10 @@ export const getAvailableThemes = (state: RootState) => {
 
     return arr
   }
-  
-  const themes = Array.from(new Set([
-    ...values(state.themes.paint).reduce(_reducer, []),
-    ...values(state.themes.text).reduce(_reducer, []),
-  ]))
+
+  const themes = Array.from(
+    new Set([...values(state.themes.paint).reduce(_reducer, []), ...values(state.themes.text).reduce(_reducer, [])]),
+  )
 
   return themes
 }

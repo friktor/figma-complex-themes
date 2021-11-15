@@ -2,9 +2,10 @@ import React, { useCallback } from "react"
 import { useDispatch } from "react-redux"
 
 import { removePaintStyle, updatePaintStyle } from "client/features/themes"
-import { Icons } from "client/components"
+import { Icons, PaintPreview, SelectPopup } from "client/components"
 import { BaseProperties } from "models"
 
+import { createDraftPaint } from "utils/style/paints"
 import { GradientItem } from "./Gradient"
 import { SolidItem } from "./Solid"
 
@@ -12,6 +13,11 @@ interface IProps {
   style: BaseProperties
   index: number
   paint: Paint
+}
+
+const types = {
+  GRADIENT_LINEAR: "Linear Gradient",
+  SOLID: "Color",
 }
 
 export function PaintItem({ style, index, paint }: IProps) {
@@ -27,8 +33,8 @@ export function PaintItem({ style, index, paint }: IProps) {
     )
   }, [index, style, paint])
 
-  const onChangeSolid = useCallback(
-    (updated: SolidPaint) => {
+  const onChangePaint = useCallback(
+    (updated: Paint) => {
       dispatch(
         updatePaintStyle({
           collection: style.theme ? style.theme : style.group,
@@ -41,22 +47,49 @@ export function PaintItem({ style, index, paint }: IProps) {
     [style, index],
   )
 
-  const onChangeGradient = useCallback(() => {
-    // @TODO
-  }, [style, index, paint])
+  const onChangePaintType = React.useCallback(
+    (paintType: "SOLID" | "GRADIENT_LINEAR") => () => {
+      const paint = createDraftPaint(paintType)
+
+      dispatch(
+        updatePaintStyle({
+          collection: style.theme ? style.theme : style.group,
+          id: style.id,
+          paint,
+          index,
+        }),
+      )
+    },
+    [style, index],
+  )
 
   let form
 
   if (paint.type === "SOLID") {
-    form = <SolidItem paint={paint as SolidPaint} onChange={onChangeSolid} />
+    form = <SolidItem paint={paint as SolidPaint} onChange={onChangePaint} />
   } else if (paint.type.includes("GRADIENT")) {
-    form = <GradientItem paint={paint as GradientPaint} onChange={onChangeGradient} />
+    form = <GradientItem paint={paint as GradientPaint} onChange={onChangePaint} />
   }
 
   return (
     <div className="paint">
-      <div className="button remove" onClick={onRemovePaint}>
-        <Icons.Trash color="#F44336" size={15} />
+      <div className="header">
+        <PaintPreview paints={[paint]} />
+
+        <SelectPopup
+          title={types[paint.type] || paint.type}
+          triggerClassName="switch"
+          iconSize={11}
+          icon="Caret"
+          items={[
+            { title: "Linear Gradient", onClick: onChangePaintType("GRADIENT_LINEAR") },
+            { title: "Color", onClick: onChangePaintType("SOLID") },
+          ]}
+        />
+
+        <div className="remove" onClick={onRemovePaint}>
+          <Icons.Trash color="#f44336" size={16} />
+        </div>
       </div>
 
       {form}

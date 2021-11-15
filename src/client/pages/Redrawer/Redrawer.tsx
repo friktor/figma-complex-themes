@@ -28,13 +28,14 @@ export function Redrawer(props) {
   )
 
   const onRedrawAll = React.useCallback(async () => {
-    const tasks = currentSelections.map(({ id }) => api.redrawFrame({
-      targetThemeCollection: targetCollection,
-      sourceFrameId: id,
-    }))
+    const tasks = currentSelections.map(({ id }) =>
+      api.redrawFrame({
+        targetThemeCollection: targetCollection,
+        sourceFrameId: id,
+      }),
+    )
 
     await Promise.all(tasks)
-
     ;(alert as any).success("Redraw all finished", {
       type: "success",
     })
@@ -42,9 +43,7 @@ export function Redrawer(props) {
 
   const selectionsByName = currentSelections.map(selection => selection.name).join(", ")
 
-  const selections = currentSelections.map(selection => (
-    <SelectionItem selection={selection} key={selection.id} />
-  ))
+  const selections = currentSelections.map(selection => <SelectionItem selection={selection} key={selection.id} />)
 
   const collectionActions = availableCollections.map(name => ({
     onClick: onChangeCollection(name),

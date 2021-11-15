@@ -42,7 +42,7 @@ export function Layout({ children, route: currentRoute, setRoute }: IProps) {
         <div className={cx("tabs", currentRoute)}>{tabs}</div>
         <main>{children}</main>
       </div>
-      
+
       <Editor />
     </>
   )

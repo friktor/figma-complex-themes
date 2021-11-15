@@ -28,11 +28,11 @@ import {
 export interface ThemesState {
   paint: Collections<RawPaintStyle>
   text: Collections<RawTextStyle>
-  
+
   openedGroups: Record<string, boolean>
   selections: SelectionEvent[]
   library: Library
-  
+
   editable?: RawStyle
   search?: string
 }
@@ -113,7 +113,7 @@ const reducers = {
     if (state.editable) {
       state.editable = payload.styles[0] as any
     }
-  }
+  },
 }
 
 const extraReducers = {
@@ -146,11 +146,17 @@ const extraReducers = {
     }
   },
 
-  [removeCollection.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.RemoveCollection>) => {
+  [removeCollection.fulfilled.type]: (
+    state: Draft<ThemesState>,
+    { payload }: PayloadAction<Payload.RemoveCollection>,
+  ) => {
     delete state[payload.type][payload.name]
   },
 
-  [removeThemeGroup.fulfilled.type]: (state: Draft<ThemesState>, { payload }: PayloadAction<Payload.RemoveThemeGroup>) => {
+  [removeThemeGroup.fulfilled.type]: (
+    state: Draft<ThemesState>,
+    { payload }: PayloadAction<Payload.RemoveThemeGroup>,
+  ) => {
     const collection = state[payload.type][payload.theme]
 
     for (const id of collection.groups[payload.group].ids) {

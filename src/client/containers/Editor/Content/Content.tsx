@@ -12,14 +12,14 @@ interface IProps {
 export function Content({ style }: IProps) {
   const { inner } = style as any
 
-  const content = objectSwitch(inner.type, {
-    [StyleType.PAINT]: () => <PaintEditor style={style as any} />,
-    [StyleType.TEXT]: () => <TextEditor style={style as any} />,
-  }, true)
-
-  return (
-    <div className="content">
-      {content}
-    </div>
+  const content = objectSwitch(
+    inner.type,
+    {
+      [StyleType.PAINT]: () => <PaintEditor style={style as any} />,
+      [StyleType.TEXT]: () => <TextEditor style={style as any} />,
+    },
+    true,
   )
+
+  return <div className="content">{content}</div>
 }
