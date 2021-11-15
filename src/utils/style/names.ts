@@ -1,56 +1,56 @@
-import assign from "lodash-es/assign"
-
 const nameMatchers = {
-    themes: /\[(\w+|\w+:\w+)\]/,
-    group: /^(\w+)\/(.*)$/,
+  themes: /\[(\w+|\w+:\w+)\]/,
+  group: /^(\w+)\/(.*)$/,
 }
 
-export const parse = (rawname: string): {
-    collection?: string,
-    groupName?: string,
-    styleName: string,
-} => {
-    let result: any = {}
+interface ParsedStylename {
+  theme?: string
+  group?: string
+  name: string
+}
 
-    const _names = (_name) => {
-        if (nameMatchers.group.test(_name)) {
-            const [ $_, groupName, styleName ] = _name.match(nameMatchers.group)
-            
-            return {
-                groupName,
-                styleName,
-            }
-        } else {
-            return {
-                styleName: _name,
-            }
-        }
-    }
+export const parse = (fullname: string): ParsedStylename => {
+  let result: any = {}
 
-    if (nameMatchers.themes.test(rawname)) {
-        const [ $themeFull, collection ] = rawname.match(nameMatchers.themes)
-        result.collection = collection
+  const _names = _name => {
+    if (nameMatchers.group.test(_name)) {
+      const [$_, group, name] = _name.match(nameMatchers.group)
 
-        const names = _names(rawname.replace($themeFull, "").replace(" ", ""))
-
-        if (names) {
-            result = assign({}, result, names)
-        }
+      return {
+        group,
+        name,
+      }
     } else {
-        const names = _names(rawname.replace(" ", ""))
-
-        if (names) {
-            result = assign({}, result, names)
-        }
+      return {
+        name: _name,
+      }
     }
+  }
 
-    return result
+  if (nameMatchers.themes.test(fullname)) {
+    const [$themeFull, theme] = fullname.match(nameMatchers.themes)
+    result.theme = theme
+
+    const names = _names(fullname.replace($themeFull, "").replace(" ", ""))
+
+    if (names) {
+      result = Object.assign({}, result, names)
+    }
+  } else {
+    const names = _names(fullname.replace(" ", ""))
+
+    if (names) {
+      result = Object.assign({}, result, names)
+    }
+  }
+
+  return result
 }
 
-export const generate = (collection?: string, group?: string, styleName?: string) => {
-    const _collection = collection ? `[${collection}]` : ""
-    const _group = group || "Temp"
-    const _style = styleName || "Untitled"
+export const generate = (theme?: string, group?: string, name?: string) => {
+  const _theme = theme ? `[${theme}]` : ""
+  const _group = group || "Temp"
+  const _style = name || "Untitled"
 
-    return `${_group}${_collection}/${_style}`
+  return `${_group}${_theme}/${_style}`
 }

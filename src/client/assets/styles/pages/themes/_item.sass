@@ -1,52 +1,48 @@
-.collection .items .item
-    background-color: transparent
-    transition: all 0.2s ease
-    padding: 0 16px
-    height: 36px
+.page.themes .item.style
+	background-color: transparent
+	transition: all 0.2s ease
 
-    justify-content: space-between
-    align-items: center
-    display: flex
+	justify-content: space-between
+	align-items: center
+	display: flex
 
-    .title
-        align-items: center
-        display: flex
-        flex: 1
+	.title
+		margin-left: 16px
 
-        .name
-            margin-left: 15px
-            flex: 1
+		align-items: center
+		display: flex
+		flex: 1
 
-    &:hover
-        background-color: transparentize($primary-blue, 0.95)
+		.name
+			margin-left: 15px
+			flex: 1
 
-        // .actions
-        //     visibility: visible
+	&:hover
+		background-color: transparentize($primary-blue, 0.95)
 
-    .actions
-        // visibility: hidden
+	.actions
+		margin-right: 10px
 
-        align-items: center
-        display: flex
-        
-        .action
-            background-color: transparent
-            transition: all .25s ease
-            border-radius: 3px
-            user-select: none
-            cursor: pointer
-            outline: none
-            border: none
+		align-items: center
+		display: flex
 
-            justify-content: center
-            align-items: center
-            display: flex
+		.action
+			background-color: transparent
+			transition: all .25s ease
+			border-radius: 3px
+			user-select: none
+			cursor: pointer
+			outline: none
+			border: none
 
-            height: 24px
-            width: 34px
+			justify-content: center
+			align-items: center
+			display: flex
 
-            opacity: 0.65
+			opacity: 0.65
+			height: 24px
+			width: 34px
 
-            &:hover
-                background-color: transparentize(#000, 0.9)
-                opacity: 0.85
+			&:hover
+				background-color: transparentize(#000, 0.9)
+				opacity: 0.85

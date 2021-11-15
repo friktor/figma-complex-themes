@@ -1,0 +1,100 @@
+.editor .paint-editor
+  flex-direction: column
+  display: flex
+  flex: 1
+
+  max-height: 310px
+
+  .items
+    flex-direction: column
+    overflow-y: scroll
+    display: flex
+    
+    min-height: 270px
+    flex: 0 1 auto
+
+    &::-webkit-scrollbar
+      width: 2px
+
+    &::-webkit-scrollbar-track
+      background: #FFF
+
+    &::-webkit-scrollbar-thumb
+      border-radius: 2px
+      background: #E0E0E0
+
+  .button.add
+    border-top: 1px solid #03A9F4
+    transition: all 0.25s ease
+    user-select: none
+    cursor: pointer
+    color: #03A9F4
+    height: 36px
+    flex: 0 0 auto
+
+    justify-content: center
+    align-items: center
+    display: flex
+
+    font-weight: 500
+    font-size: 12px
+
+    &:hover
+      border-color: darken(#03A9F4, 5%)
+      color: darken(#03A9F4, 5%)
+
+  .paint
+    border-bottom: 1px solid transparentize(#000, 0.95)
+    position: relative
+
+    .header
+      justify-content: space-between
+      align-items: center
+      display: flex
+
+      padding: 6px 16px
+
+      .remove
+        border: 1px solid transparent
+        transition: all .2s ease
+        background: transparent
+        border-radius: 3px
+
+        height: 24px
+        width: 24px
+
+        flex-direction: row-reverse
+        justify-content: center
+        align-items: center
+        display: flex
+
+        user-select: none
+        cursor: pointer
+        outline: none
+
+      .switch
+        border: 1px solid transparent
+        transition: all .2s ease
+        background: transparent
+        border-radius: 3px
+        padding: 4px 6px
+
+        flex-direction: row-reverse
+        align-items: center
+        display: flex
+        
+        user-select: none
+        cursor: pointer
+        outline: none
+        
+        &:hover
+          border-color: rgba(0,0,0, 0.1)
+          
+        span
+          color: rgba(0,0,0, 0.8)
+          margin-right: 4px
+          font-weight: 500
+          font-size: 12px
+        
+        svg
+          margin-bottom: -1px

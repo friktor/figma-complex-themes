@@ -1,0 +1,51 @@
+.page.themes .header.theme
+  border-bottom: 1px solid rgba(0,0,0, 0.05)
+  border-top: 1px solid rgba(0,0,0, 0.05)
+
+  justify-content: space-between
+  align-items: center
+  display: flex
+
+  height: 34px
+
+  .name
+    margin-left: 16px
+
+    // @input
+    span, input
+      color: transparentize(#000, 0.2)
+      font-weight: 500
+      font-size: 12px
+
+  .actions
+    margin-right: 10px
+    
+    align-items: center
+    display: flex
+
+    .action
+      background-color: transparent
+      transition: all .2s ease
+      border-radius: 3px
+      user-select: none
+      outline: none
+      border: none
+      cursor: pointer
+
+      justify-content: center
+      align-items: center
+      display: flex
+
+      height: 24px
+      width: 34px
+
+      &:hover
+        background-color: transparentize($primary-blue, 0.9)
+
+        svg path
+          stroke: transparentize(#000, 0.35)
+          fill: transparentize(#000, 0.35)
+
+          &:last-child
+            svg path
+              stroke: $primary-blue !important

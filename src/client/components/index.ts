@@ -1,9 +1,6 @@
-import * as Icons from "./Icons"
-export * from "./GradientEditor"
+export * as Icons from "./Icons"
 export * from "./PaintPreview"
-export * from "./ColorEditor"
+export * from "./TextPreview"
 export * from "./SelectPopup"
-export * from "./StyleEditor"
+export * from "./Layout"
 export * from "./Input"
-
-export { Icons }

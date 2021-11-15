@@ -7,44 +7,44 @@ type Handler = (opts?: any) => Promise<any | undefined>
 type Handlers = Record<string, Handler>
 
 export class RpcHandler {
-    private handlers: Handlers = {}
+  private handlers: Handlers = {}
 
-    constructor(handlers: Handlers) {
-        this.handlers = handlers
-    }
+  constructor(handlers: Handlers) {
+    this.handlers = handlers
+  }
     
-    public matcher = async (event: RpcRequest) => {
-        // console.log("Received event from UI:", event)
+  public matcher = async (event: RpcRequest) => {
+    // console.log("Received event from UI:", event)
 
-        if (event.action && event.actionId) {
-            const handler = this.handlers[event.action]
+    if (event.action && event.actionId) {
+      const handler = this.handlers[event.action]
 
-            if (handler) {
-                try {
-                    const result = await handler(event.data)
+      if (handler) {
+        try {
+          const result = await handler(event.data)
 
-                    const response: RpcResponse<any> = {
-                        actionId: event.actionId,
-                        action: event.action,
-                        type: "success",
-                        data: result,
-                    }
+          const response: RpcResponse<any> = {
+            actionId: event.actionId,
+            action: event.action,
+            type: "success",
+            data: result,
+          }
 
-                    figma.ui.postMessage(response)
-                } catch (error) {
-                    const response: RpcResponse<any> = {
-                        actionId: event.actionId,
-                        action: event.action,
+          figma.ui.postMessage(response)
+        } catch (error) {
+          const response: RpcResponse<any> = {
+            actionId: event.actionId,
+            action: event.action,
 
-                        type: "failed",
-                        error,
-                    }
+            type: "failed",
+            error,
+          }
 
-                    figma.ui.postMessage(response)
-                }
-            } else {
-                console.log(`Unknown received event data`, event)
-            }
+          figma.ui.postMessage(response)
         }
+      } else {
+        console.log("Unknown received event data", event)
+      }
     }
+  }
 }

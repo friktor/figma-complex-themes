@@ -1,31 +1,25 @@
-import { Provider as MobxProvider } from "mobx-react"
-import * as ReactDOM from "react-dom"
-import { configure } from "mobx"
-import * as React from "react"
-
-import "rc-color-picker/assets/index.css"
 import "reactjs-popup/dist/index.css"
-
+import "react-virtualized/styles.css"
 import "./client/assets/styles/main.sass"
 
-import { ThemeStore } from "./client/store"
+import React, { useEffect } from "react"
+import { Provider } from "react-redux"
+import * as ReactDOM from "react-dom"
+
+import { registerSyncSelectionsService } from "./client/services"
 import { App } from "./client/containers"
-
-// var scriptTag = document.createElement('script')
-// scriptTag.src = "http://localhost:8098"
-// document.body.appendChild(scriptTag)
-
-configure({ enforceActions: "never" })
-
-const themeStore = new ThemeStore()
-themeStore.loadStyles()
+import { store } from "./client/store"
 
 function Root() {
-    return (
-        <MobxProvider themeStore={themeStore}>
-            <App />
-        </MobxProvider>
-    )
+  useEffect(() => {
+    registerSyncSelectionsService(store)
+  }, [])
+
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  )
 }
 
 ReactDOM.render(<Root />, document.getElementById("root"))
