@@ -1,97 +1,97 @@
 .page.redrawer
+  flex-direction: column
+  display: flex
+  flex: 1
+
+  & > .header
+    border-bottom: 1px solid rgba(0,0,0, 0.05)
+    position: relative
+    padding: 0px 16px
+    height: 36px
+
+    justify-content: center
+    flex-direction: column
+    display: flex
+
+    .title
+      background: transparent
+      font-weight: 500
+      font-size: 12px
+      border: none
+      height: auto
+      color: #000
+
+      &:focus
+        outline: none
+
+    .selections
+      color: transparentize(#000, 0.4)
+      font-weight: 500
+      font-size: 10px
+
+  & > .content
     flex-direction: column
     display: flex
     flex: 1
 
-    & > .header
-        border-bottom: 1px solid rgba(0,0,0, 0.05)
-        position: relative
-        padding: 0px 16px
-        height: 36px
+    .empty
+      justify-content: center
+      align-items: center
+      display: flex
+      flex: 1
+
+      .title
+        color: transparentize(#000, 0.2)
+        text-align: center
+        font-weight: 500
+        font-size: 14px
+
+    .items
+      flex-direction: column
+      display: flex
+
+  & > .content .items .item.selection, & > .toolbar
+    justify-content: space-between
+    align-items: center
+    display: flex
+
+    border-bottom: 1px solid transparentize(#000, 0.95)
+    padding: 8px 16px
+
+    .name
+      color: transparentize(#000, 0.2)
+      font-weight: 500
+      font-size: 11px
+
+    .actions
+      align-items: center
+      display: flex
+      
+      .action:first-child
+        border: 1px solid transparentize(#000, 0.95)
+        margin-right: 8px
+        
+      .action
+        background-color: transparent
+        transition: all .2s ease
+        border-radius: 3px
+        
+        user-select: none
+        outline: none
+        border: none
         
         justify-content: center
-        flex-direction: column
-        display: flex
-
-        .title
-            background: transparent
-            font-weight: 500
-            font-size: 12px
-            border: none
-            height: auto
-            color: #000
-
-            &:focus
-                outline: none
-        
-        .selections
-            color: transparentize(#000, 0.4)
-            font-weight: 500
-            font-size: 10px
-
-    & > .content
-        flex-direction: column
-        display: flex
-        flex: 1
-
-        .empty
-            justify-content: center
-            align-items: center
-            display: flex
-            flex: 1
-
-            .title
-                color: transparentize(#000, 0.2)
-                text-align: center
-                font-weight: 500
-                font-size: 14px
-
-        .items
-            flex-direction: column
-            display: flex
-
-    & > .content .items .item.selection, & > .toolbar
-        justify-content: space-between
         align-items: center
         display: flex
-
-        border-bottom: 1px solid transparentize(#000, 0.95)
-        padding: 8px 16px
-
-        .name
-            color: transparentize(#000, 0.2)
-            font-weight: 500
-            font-size: 11px
-
-        .actions
-            align-items: center
-            display: flex
-
-            .action:first-child
-                border: 1px solid transparentize(#000, 0.95)
-                margin-right: 8px
-
-            .action
-                background-color: transparent
-                transition: all .2s ease
-                border-radius: 3px
-
-                user-select: none
-                outline: none
-                border: none
-
-                justify-content: center
-                align-items: center
-                display: flex
-
-                padding: 0 8px
-                height: 24px
-                cursor: pointer
-
-                span
-                    color: transparentize(#000, 0.3)
-                    font-weight: 500
-                    font-size: 12px
-
-                &:hover
-                    background-color: transparentize($primary-blue, 0.9)
+        
+        padding: 0 8px
+        height: 24px
+        cursor: pointer
+        
+        span
+          color: transparentize(#000, 0.3)
+          font-weight: 500
+          font-size: 12px
+        
+        &:hover
+          background-color: transparentize($primary-blue, 0.9)

@@ -1,48 +1,48 @@
 .popup-overlay.modal-style-editor-overlay
-    z-index: 9999
-    
+  z-index: 9999
+
 .popup-content.modal-style-editor-content
-    height: 100% !important
-    width: 100% !important
-    
+  height: 100% !important
+  width: 100% !important
+
 .popup-content:not(.modal-style-editor-content)
-    width: 100% !important
-    left: 0px !important
-    margin-top: -2px
-    
-    & > div:first-child
-        display: none
+  width: 100% !important
+  left: 0px !important
+  margin-top: -2px
+
+  & > div:first-child
+    display: none
 
 .popup-content
-    box-shadow: 0px 2px 3px rgba(0,0,0, 0.05) !important
-    padding: 0
+  box-shadow: 0px 2px 3px rgba(0,0,0, 0.05) !important
+  padding: 0
 
-    border-radius: 0px !important
-    border: none !important
+  border-radius: 0px !important
+  border: none !important
 
-    .menu
-        flex-direction: column
-        display: flex
+  .menu
+    flex-direction: column
+    display: flex
 
-        .item:first-child
-            border-top: 1px solid rgba(0,0,0, 0.05)
+    .item:first-child
+      border-top: 1px solid rgba(0,0,0, 0.05)
 
-        .item
-            border-bottom: 1px solid rgba(0,0,0, 0.05)
-            transition: all .2s ease
-            align-items: center
-            display: flex
-
-            padding: 8px 16px
-            user-select: none
-            cursor: pointer
-
-            &.active, &:hover
-                background-color: transparentize($primary-blue, 0.9)
-
-            span
-                margin-left: 10px
-
-                color: rgba(0,0,0, 0.7)
-                line-height: 12px
-                font-size: 12px
+    .item
+      border-bottom: 1px solid rgba(0,0,0, 0.05)
+      transition: all .2s ease
+      
+      align-items: center
+      display: flex
+      
+      padding: 8px 16px
+      user-select: none
+      cursor: pointer
+      
+      &.active, &:hover
+        background-color: transparentize($primary-blue, 0.9)
+      
+      span
+        margin-left: 10px
+        color: rgba(0,0,0, 0.7)
+        line-height: 12px
+        font-size: 12px
