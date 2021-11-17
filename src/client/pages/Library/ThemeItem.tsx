@@ -1,6 +1,6 @@
+import React, { useCallback } from "react"
 import { useDispatch } from "react-redux"
 import * as Alert from "react-alert"
-import * as React from "react"
 
 import { Input, SelectPopup } from "client/components"
 import { getLibrary } from "client/features/themes"
@@ -29,7 +29,7 @@ export function ThemeItem({ theme }: IProps) {
   const alert = Alert.useAlert()
   const dispatch = useDispatch()
 
-  const onMergeWithPageCollection = React.useCallback(async () => {
+  const onMergeWithPageCollection = useCallback(async () => {
     await api.mergeSerializedThemeWithCurrent(theme)
     dispatch(getLibrary())
 
@@ -38,16 +38,16 @@ export function ThemeItem({ theme }: IProps) {
     })
   }, [theme])
 
-  const onRemoveLibraryTheme = React.useCallback(async () => {
+  const onRemoveLibraryTheme = useCallback(async () => {
     await api.removeThemeFromLibrary(theme)
     dispatch(getLibrary())
   }, [theme])
 
-  const onDownloadJson = React.useCallback(() => {
+  const onDownloadJson = useCallback(() => {
     downloadJSON(theme.name, theme)
   }, [theme])
 
-  const onChangeName = React.useCallback(
+  const onChangeName = useCallback(
     async (params: { value: string }) => {
       await api.renameLibraryTheme({
         newname: params.value,

@@ -6,11 +6,12 @@ import { RootState } from "client/features"
 
 const { values } = Object
 
+export const getCreateFormOptions = (state: RootState) => state.themes.forms.create
 export const getOpenedGroups = (state: RootState) => state.themes.openedGroups
 export const getSelections = (state: RootState) => state.themes.selections
 export const getSearchQuery = (state: RootState) => state.themes.search
-export const getFullLibrary = (state: RootState) => state.themes.library
 
+export const getFullLibrary = (state: RootState) => state.themes.library
 export const getPaintThemes = (state: RootState) => state.themes.paint
 export const getTextThemes = (state: RootState) => state.themes.text
 
@@ -53,8 +54,3 @@ export const getFlatTextThemes = createSelector(
       searchQuery,
     }),
 )
-
-export const getFlatThemesList = createSelector([getFlatPaintThemes, getFlatTextThemes], (paint, text) => ({
-  paint,
-  text,
-}))

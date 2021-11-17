@@ -8,6 +8,7 @@ import { Collection } from "../types"
 import * as Payload from "./payload"
 import * as api from "client/api"
 import { RawStyle } from "models"
+import { setGroupOpened } from ".."
 
 const { values } = Object
 
@@ -51,6 +52,24 @@ export const renameThemeGroup = createAsyncThunk<Payload.UpdatedStyles, Payload.
       .map(renameStyleThemeGroup(options.new))
 
     const styles = await api.syncThemeStyles(draft)
+
+    // Fix broken opened keys
+    Promise.all([
+      dispatch(
+        setGroupOpened({
+          theme: collection.name,
+          group: options.group,
+          opened: false,
+        } as any),
+      ),
+      dispatch(
+        setGroupOpened({
+          theme: collection.name,
+          group: options.new,
+          opened: true,
+        } as any),
+      ),
+    ])
 
     dispatch({
       type: removeThemeGroup.fulfilled.type,

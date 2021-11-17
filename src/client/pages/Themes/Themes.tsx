@@ -1,24 +1,29 @@
 import { AutoSizer, List, ListRowProps, Size } from "react-virtualized"
-import React, { useCallback, useRef, useState } from "react"
+import React, { ReactNode, useCallback, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
-import { createGroup, createTheme } from "client/features/themes"
-import { getFlatThemesList, getSelections } from "client/selectors"
+import { createGroup, createTheme, getThemes, setCreateFormOptions } from "client/features/themes"
+import { getFlatPaintThemes, getFlatTextThemes, getSelections } from "client/selectors"
 import { SelectPopup } from "client/components"
 import objectSwitch from "utils/objectSwitch"
 import * as Divider from "./Divider"
 import * as Header from "./Header"
+import * as api from "client/api"
 import { Search } from "./Search"
 import { Item } from "./Item"
-interface IProps {}
 
-export function Themes(props: IProps) {
+export function Themes() {
   const [themeType, setThemeType] = useState<"paint" | "text">("paint")
-  const themes = useSelector(getFlatThemesList)
   const selections = useSelector(getSelections)
   const dispatch = useDispatch()
-  const list = themes[themeType]
   const listRef = useRef()
+
+  const list = useSelector(
+    objectSwitch(themeType, {
+      paint: getFlatPaintThemes,
+      text: getFlatTextThemes,
+    }),
+  )
 
   const getRowHeight = useCallback(
     ({ index }: ListRowProps) =>
@@ -32,7 +37,7 @@ export function Themes(props: IProps) {
 
         STYLE_ITEM: 34,
       }),
-    [themes],
+    [list],
   )
 
   const rowRenderer = useCallback(
@@ -54,20 +59,29 @@ export function Themes(props: IProps) {
         true,
       )
     },
-    [themes],
+    [list],
   )
 
-  const onCreateTempGroup = React.useCallback(() => {
-    dispatch(createGroup({ group: "Untitled", type: themeType }))
+  const onCreateTempGroup = useCallback(() => {
+    dispatch(setCreateFormOptions({ type: themeType, target: "group" }))
   }, [themeType])
 
-  const onCreateTempTheme = React.useCallback(() => {
-    dispatch(createTheme({ theme: "Untitled", type: themeType }))
+  const onCreateTempTheme = useCallback(() => {
+    dispatch(setCreateFormOptions({ type: themeType, target: "theme" }))
   }, [])
 
-  const onImportStyles = React.useCallback(() => {
-    // @TODO
-  }, [])
+  const onImportStyles = useCallback(async () => {
+    const sourceFrameIds = selections.map(({ id }) => id)
+    await api.importStyleFromFrameToTheme({ sourceFrameIds })
+    dispatch(getThemes())
+  }, [selections])
+
+  const onChangeThemeType = useCallback(
+    (key: "paint" | "text") => () => {
+      setThemeType(key)
+    },
+    [],
+  )
 
   let importStylesTitle
   if (selections?.length > 0) {
@@ -88,21 +102,6 @@ export function Themes(props: IProps) {
     )
   }
 
-  const actions = [
-    {
-      onClick: onCreateTempGroup,
-      title: "Create Group",
-    },
-    {
-      onClick: onCreateTempTheme,
-      title: "Create Theme",
-    },
-    {
-      onClick: onImportStyles,
-      title: importStylesTitle,
-    },
-  ]
-
   const listProps = {
     rowRenderer: rowRenderer,
     rowHeight: getRowHeight,
@@ -112,14 +111,48 @@ export function Themes(props: IProps) {
     ref: listRef,
   }
 
-  const actionsProps = {
-    iconColor: "#18a0fb",
-    items: actions,
-    iconSize: 20,
-    icon: "Plus",
-  }
+  const actions = [
+    {
+      className: "action theme-type",
+      iconColor: "#000",
+      iconSize: 12,
 
-  const listCalculator = (size: Size): React.ReactNode => (
+      icon: objectSwitch(themeType, {
+        paint: "Brush",
+        text: "Text",
+      }),
+
+      items: ["paint", "text"].map((key: "paint" | "text") => ({
+        onClick: onChangeThemeType(key),
+        title: `Show ${key} themes`,
+        icon: objectSwitch(key, {
+          paint: "Brush",
+          text: "Text",
+        }),
+      })),
+    },
+    {
+      iconColor: "#18a0fb",
+      iconSize: 20,
+      icon: "Plus",
+      items: [
+        {
+          onClick: onCreateTempGroup,
+          title: "Create Group",
+        },
+        {
+          onClick: onCreateTempTheme,
+          title: "Create Theme",
+        },
+        {
+          onClick: onImportStyles,
+          title: importStylesTitle,
+        },
+      ],
+    },
+  ]
+
+  const listCalculator = (size: Size): ReactNode => (
     <List
       // height={size.height}
       width={size.width}
@@ -134,7 +167,9 @@ export function Themes(props: IProps) {
         <Search />
 
         <div className="actions">
-          <SelectPopup {...actionsProps} />
+          {actions.map((actionProps, index) => (
+            <SelectPopup key={`menu-${index}`} {...actionProps} />
+          ))}
         </div>
       </div>
 

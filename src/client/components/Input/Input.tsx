@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, { ChangeEvent, KeyboardEvent, FocusEvent, useCallback, useEffect, useRef, useState } from "react"
 import cx from "classnames"
 
 interface IProps {
@@ -12,23 +12,23 @@ interface IProps {
 
 export function Input(props: IProps) {
   const { name, onChange, onStateChange, validator } = props
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  const [editable, setEditable] = React.useState(false)
-  const [value, setValue] = React.useState("")
+  const [editable, setEditable] = useState(false)
+  const [value, setValue] = useState("")
 
-  React.useEffect(() => {
+  useEffect(() => {
     setValue(props.value)
   }, [props.value])
 
-  const onClickEdit = React.useCallback(() => {
+  const onClickEdit = useCallback(() => {
     onStateChange && onStateChange({ name, editable: true })
     setEditable(true)
 
     setTimeout(() => inputRef.current && inputRef.current.focus(), 50)
   }, [])
 
-  const onChangeValue = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeValue = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
 
     // @TODO: its very slow, update for fast check mask
@@ -43,8 +43,8 @@ export function Input(props: IProps) {
     setValue(value)
   }, [])
 
-  const onPressEnter = React.useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const onPressEnter = useCallback(
+    (event: KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "Enter") {
         onStateChange && onStateChange({ name, editable: false })
         setEditable(false)
@@ -55,8 +55,8 @@ export function Input(props: IProps) {
     [value],
   )
 
-  const onBlur = React.useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
+  const onBlur = useCallback(
+    (event: FocusEvent<HTMLInputElement>) => {
       onStateChange && onStateChange({ name, editable: false })
       onChange({ name, value })
       setEditable(false)

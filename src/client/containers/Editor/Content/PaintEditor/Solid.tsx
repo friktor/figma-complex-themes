@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react"
 import chroma from "chroma-js"
 import cx from "classnames"
 
@@ -14,9 +14,9 @@ export function SolidItem(props: IProps) {
   const [alpha, setAlpha] = useState<number>(1)
   const [hex, setHex] = useState<string>("000")
 
-  const [rgbError, setRgbError] = React.useState<[number, number, number]>([0, 0, 0])
-  const [alphaError, setAlphaError] = React.useState<number>(0)
-  const [hexError, setHexError] = React.useState<number>(0)
+  const [rgbError, setRgbError] = useState<[number, number, number]>([0, 0, 0])
+  const [alphaError, setAlphaError] = useState<number>(0)
+  const [hexError, setHexError] = useState<number>(0)
 
   const getPaintColor = useCallback((paint: SolidPaint) => {
     const { r, g, b } = paint.color
@@ -49,7 +49,7 @@ export function SolidItem(props: IProps) {
     setRgb(rgb)
   }, [props.paint])
 
-  const onChangeHex = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeHex = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const newHex = event.target.value.replace("#", "")
     setHex(newHex)
 
@@ -76,7 +76,7 @@ export function SolidItem(props: IProps) {
   )
 
   const onRgbChange = useCallback(
-    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target
       const newRgb: any = [...rgb]
       newRgb[index] = value as any
@@ -122,7 +122,7 @@ export function SolidItem(props: IProps) {
     [hex, getPaintFromColor],
   )
 
-  const onChangeAlpha = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeAlpha = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
     setAlpha(value as any)
 

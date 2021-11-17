@@ -1,5 +1,5 @@
+import React, { useEffect, useState, useCallback } from "react"
 import { useSelector } from "react-redux"
-import React, { useEffect } from "react"
 import * as Alert from "react-alert"
 
 import { getAvailableThemes, getSelections } from "client/selectors"
@@ -12,7 +12,7 @@ export function Redrawer(props) {
   const currentSelections = useSelector(getSelections)
   const alert = Alert.useAlert()
 
-  const [targetCollection, setTargetCollection] = React.useState<string>()
+  const [targetCollection, setTargetCollection] = useState<string>()
 
   useEffect(() => {
     if (availableCollections.length) {
@@ -20,14 +20,14 @@ export function Redrawer(props) {
     }
   }, [availableCollections])
 
-  const onChangeCollection = React.useCallback(
+  const onChangeCollection = useCallback(
     (name: string) => () => {
       setTargetCollection(name)
     },
     [],
   )
 
-  const onRedrawAll = React.useCallback(async () => {
+  const onRedrawAll = useCallback(async () => {
     const tasks = currentSelections.map(({ id }) =>
       api.redrawFrame({
         targetThemeCollection: targetCollection,

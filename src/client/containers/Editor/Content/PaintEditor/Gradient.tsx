@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react"
 import { useDispatch } from "react-redux"
 import cx from "classnames"
 
@@ -29,7 +29,7 @@ export function GradientItem(props: IProps) {
     setExpression(expr)
   }, [props.paint])
 
-  const onChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
     setExpression(value)
 

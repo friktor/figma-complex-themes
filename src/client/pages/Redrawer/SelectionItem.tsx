@@ -1,19 +1,18 @@
+import React, { useState, useEffect, useCallback } from "react"
 import { useSelector } from "react-redux"
 import * as Alert from "react-alert"
-import * as React from "react"
 
 import { Icons, SelectPopup } from "client/components"
 import { getAvailableThemes } from "client/selectors"
 import { SelectionEvent } from "models"
 import * as api from "client/api"
-import { useEffect } from "react"
 
 interface SelectionItemProps {
   selection: SelectionEvent
 }
 
 export function SelectionItem({ selection }: SelectionItemProps) {
-  const [targetCollection, setTargetCollection] = React.useState<string>()
+  const [targetCollection, setTargetCollection] = useState<string>()
   const availableCollections = useSelector(getAvailableThemes)
   const alert = Alert.useAlert()
 
@@ -23,14 +22,14 @@ export function SelectionItem({ selection }: SelectionItemProps) {
     }
   }, [availableCollections])
 
-  const onChangeCollection = React.useCallback(
+  const onChangeCollection = useCallback(
     (name: string) => () => {
       setTargetCollection(name)
     },
     [],
   )
 
-  const onRedraw = React.useCallback(async () => {
+  const onRedraw = useCallback(async () => {
     await api.redrawFrame({
       targetThemeCollection: targetCollection,
       sourceFrameId: selection.id,

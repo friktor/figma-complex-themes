@@ -10,5 +10,9 @@ export function TextEditor({ style }: IProps) {
   const dispatch = useDispatch()
   const { inner } = style
 
-  return <div className="text-editor">Now Text Editor Not Support</div>
+  return (
+    <div className="text-editor">
+      <div className="title">At now, text editor not support</div>
+    </div>
+  )
 }

@@ -1,3 +1,15 @@
+export type CreateFormTarget = "theme" | "group" | "theme_group"
+
+export interface CreateForm {
+  target: CreateFormTarget
+  type: "paint" | "text"
+  theme?: string 
+}
+
+export interface Forms {
+  create?: CreateForm
+}
+
 export interface Group {
   name: string
   ids: string[]

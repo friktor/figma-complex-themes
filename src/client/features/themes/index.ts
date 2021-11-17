@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction, Draft } from "@reduxjs/toolkit"
 
 import { Library, RawPaintStyle, RawStyle, RawTextStyle, SelectionEvent } from "models"
+import { Collections, CreateForm, Forms } from "./types"
 import { denormalizeStyles } from "./actions/helpers"
-import { Collections } from "./types"
 export * from "./actions"
 export * from "./types"
 
@@ -10,7 +10,6 @@ export * from "./types"
 import {
   renameCollection,
   renameThemeGroup,
-  getThemes,
   removeCollection,
   removeThemeGroup,
   updatePaintStyle,
@@ -21,8 +20,9 @@ import {
   renameStyle,
   removeStyle,
   createStyle,
-  Payload,
   getLibrary,
+  getThemes,
+  Payload,
 } from "./actions"
 
 export interface ThemesState {
@@ -35,13 +35,16 @@ export interface ThemesState {
 
   editable?: RawStyle
   search?: string
+
+  forms: Forms
 }
 
 const initialState: ThemesState = {
   openedGroups: {},
   selections: [],
-  library: {},
+  forms: {},
 
+  library: {},
   paint: {},
   text: {},
 }
@@ -54,6 +57,10 @@ const reducers = {
 
   setSelections(state: Draft<ThemesState>, { payload }: PayloadAction<SelectionEvent[]>) {
     state.selections = payload
+  },
+
+  setCreateFormOptions(state: Draft<ThemesState>, { payload }: PayloadAction<CreateForm | undefined>) {
+    state.forms.create = payload
   },
 
   setGroupOpened(state: Draft<ThemesState>, { payload }: PayloadAction<Payload.SetOpenedGroup>) {
@@ -201,6 +208,7 @@ export const themesSlice = createSlice({
 // Action creators are generated for each case reducer function
 // prettier-ignore
 export const {
+  setCreateFormOptions,
   setEditableStyle,
   insertRawStyles,
   createThemeGroup,

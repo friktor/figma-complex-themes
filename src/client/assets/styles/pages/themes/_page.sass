@@ -33,10 +33,19 @@
             align-items: center
             display: flex
 
+            .action.theme-type
+                border: 1px solid transparentize(#000, 0.95)
+                border-radius: 50%
+                height: 24px
+                width: 24px
+                
+                margin-right: 5px
+                padding: 0
+
             .action
                 background-color: transparent
                 transition: all .2s ease
-                border-radius: 3px
+                border-radius: 50%
                 user-select: none
                 outline: none
                 border: none
@@ -46,7 +55,8 @@
                 display: flex
 
                 height: 24px
-                width: 34px
+                width: 24px
+                padding: 0
 
                 cursor: pointer
 

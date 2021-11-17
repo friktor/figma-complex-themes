@@ -1,4 +1,4 @@
-import React, { ChangeEvent, KeyboardEventHandler, useCallback, useState } from "react"
+import React, { ChangeEvent, KeyboardEventHandler, useCallback, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import { setSearchQuery } from "client/features/themes"
@@ -10,8 +10,17 @@ export function Search() {
   const searchQuery = useSelector(getSearchQuery)
   const dispatch = useDispatch()
 
-  const onChange = useCallback((event: ChangeEvent<HTMLInputElement>) => setValue(event.target.value), [])
-  const onBlur = useCallback(() => dispatch(setSearchQuery(value)), [value])
+  useEffect(() => {
+    setValue(searchQuery)
+  }, [searchQuery])
+
+  const onChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value)
+  }, [])
+
+  const onBlur = useCallback(() => {
+    dispatch(setSearchQuery(value))
+  }, [value])
 
   const onClear = useCallback(() => {
     dispatch(setSearchQuery(undefined))
@@ -36,11 +45,11 @@ export function Search() {
         onKeyDown={onKeyDown}
         onChange={onChange}
         onBlur={onBlur}
-        value={searchQuery}
+        value={value}
         type="text"
       />
 
-      {searchQuery && (
+      {value && (
         <div className="clear" onClick={onClear}>
           <Icons.Close size={18} />
         </div>

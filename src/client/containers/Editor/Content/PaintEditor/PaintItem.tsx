@@ -47,7 +47,7 @@ export function PaintItem({ style, index, paint }: IProps) {
     [style, index],
   )
 
-  const onChangePaintType = React.useCallback(
+  const onChangePaintType = useCallback(
     (paintType: "SOLID" | "GRADIENT_LINEAR") => () => {
       const paint = createDraftPaint(paintType)
 
@@ -78,7 +78,7 @@ export function PaintItem({ style, index, paint }: IProps) {
 
         <SelectPopup
           title={types[paint.type] || paint.type}
-          triggerClassName="switch"
+          className="switch"
           iconSize={11}
           icon="Caret"
           items={[

@@ -1,6 +1,6 @@
+import React, { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import * as Alert from "react-alert"
-import * as React from "react"
 
 import { getThemes, getLibrary } from "client/features/themes"
 import { Layout, Route } from "client/components"
@@ -11,13 +11,13 @@ import { AlertMessage } from "./Alert"
 const routes: Record<Route, any> = Pages as any
 
 export function App() {
-  const [route, setRoute] = React.useState(Route.Themes)
+  const [route, setRoute] = useState(Route.Themes)
   const dispatch = useDispatch()
 
   const layoutProps = { setRoute, route }
   const View = routes[route]
 
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(getThemes())
     dispatch(getLibrary())
   }, [])

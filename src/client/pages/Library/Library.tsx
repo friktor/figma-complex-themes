@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useDropzone } from "react-dropzone"
+import React, { useCallback } from "react"
 import * as Alert from "react-alert"
-import * as React from "react"
 
 import { getLibrary } from "client/features/themes"
 import { getFullLibrary } from "client/selectors"
@@ -18,7 +18,7 @@ export function Library() {
   const alert = Alert.useAlert()
   const dispatch = useDispatch()
 
-  const onImportCurrentTheme = React.useCallback(async () => {
+  const onImportCurrentTheme = useCallback(async () => {
     await api.serializeCurrentPageTheme()
     await delay(150)
     dispatch(getLibrary())
@@ -28,7 +28,7 @@ export function Library() {
     })
   }, [])
 
-  const onDrop = React.useCallback(async (files: File[]) => {
+  const onDrop = useCallback(async (files: File[]) => {
     const _iterator = (file: File) =>
       new Promise<SerializedTheme | undefined>(resolve => {
         const reader = new FileReader()

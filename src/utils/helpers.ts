@@ -2,6 +2,7 @@ export const flattenDeep = <O = any[]>(arr: any): O =>
   arr.flatMap(subArray => (Array.isArray(subArray) ? flattenDeep(subArray) : subArray))
 export const isPlainObject = obj => Object.prototype.toString.call(obj) === "[object Object]"
 export const size = obj => (isPlainObject(obj) ? Object.keys(obj).length : obj.length)
+export const last = arr => arr[arr.length - 1]
 
 export function pick(object, keys): any {
   return keys.reduce((obj, key) => {

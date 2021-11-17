@@ -1,4 +1,5 @@
 import { RawStyle } from "models"
+import { last } from "utils/helpers"
 const { keys } = Object
 
 interface FlatReducerParams {
@@ -69,6 +70,10 @@ export const flatThemesMapReducer = (options: FlatReducerParams) => {
     }
   }
 
+  if (last(stackList).type === "GROUPS_DIVIDER") {
+    stackList.pop()
+  }
+
   // Stack of theme collection type
   stackList.push({ type: "THEMES_DIVIDER" })
 
@@ -98,7 +103,6 @@ export const flatThemesMapReducer = (options: FlatReducerParams) => {
         continue
       }
 
-      let countStyles = 0
       for (const styleId of group.ids) {
         const style = theme.items[styleId]
 
@@ -114,14 +118,16 @@ export const flatThemesMapReducer = (options: FlatReducerParams) => {
           styleType,
           style,
         })
-
-        countStyles += 1
       }
 
-      if (!countStyles && hasSearchQuery) {
+      if (last(stackList).type === "THEME_GROUP_HEADER" && hasSearchQuery) {
         stackList.pop()
       }
     }
+  }
+
+  if (last(stackList).type === "THEMES_DIVIDER") {
+    stackList.pop()
   }
 
   return stackList
