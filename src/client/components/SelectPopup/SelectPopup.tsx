@@ -46,7 +46,7 @@ export function SelectPopup({
   const popupRef = useRef<PopupActions | undefined>()
 
   const onClick = useCallback(
-    (item: Item) => (event) => {
+    (item: Item) => event => {
       item.onClick(event)
       popupRef && popupRef.current.close()
     },
@@ -71,7 +71,6 @@ export function SelectPopup({
       trigger={
         <button className={className || "action"}>
           {icon && _getIcon(icon, iconSize || 18, iconColor)}
-
           {title && <span>{title}</span>}
         </button>
       }

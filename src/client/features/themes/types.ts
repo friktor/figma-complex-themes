@@ -3,7 +3,7 @@ export type CreateFormTarget = "theme" | "group" | "theme_group"
 export interface CreateForm {
   target: CreateFormTarget
   type: "paint" | "text"
-  theme?: string 
+  theme?: string
 }
 
 export interface Forms {

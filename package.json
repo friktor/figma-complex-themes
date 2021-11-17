@@ -2,7 +2,7 @@
   "name": "figma-complex-themes",
   "description": "Complex themes system for figma",
   "main": "./src/code.tsx",
-  "version": "0.1",
+  "version": "0.2",
   "scripts": {
     "style:fix": "prettier --config .prettierrc.js 'src/**/*.{ts,tsx}' --write",
     "lint:fix": "eslint '*/**/*.{ts,tsx}' --quiet --fix",
