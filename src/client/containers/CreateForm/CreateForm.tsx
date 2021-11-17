@@ -1,7 +1,7 @@
 import React, { ChangeEvent, KeyboardEvent, useCallback, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
-import { createGroup, createTheme, setCreateFormOptions } from "client/features/themes"
+import { createGroup, createTheme, createThemeGroup, setCreateFormOptions } from "client/features/themes"
 import { getCreateFormOptions } from "client/selectors"
 import objectSwitch from "utils/objectSwitch"
 import { Icons } from "client/components"
@@ -21,9 +21,9 @@ export function CreateForm() {
 
   const onSubmit = useCallback(() => {
     const action = objectSwitch(options.target, {
+      theme_group: createThemeGroup({ theme: options.theme, group: value, type: options.type }),
       theme: createTheme({ theme: value, type: options.type }),
       group: createGroup({ group: value, type: options.type }),
-      theme_group: { /* todo */},
     })
 
     dispatch(action)

@@ -6,9 +6,9 @@ import { updateStylename } from "./helpers"
 import { cloneDeep } from "utils/helpers"
 import { Collection } from "../types"
 import * as Payload from "./payload"
+import { setGroupOpened } from ".."
 import * as api from "client/api"
 import { RawStyle } from "models"
-import { setGroupOpened } from ".."
 
 const { values } = Object
 
@@ -26,6 +26,10 @@ export const renameCollection = createAsyncThunk<Payload.UpdatedStyles, Payload.
   async ({ type, ...options }, { getState, dispatch }) => {
     const state = getState()
     const collection = state.themes[type][options.old] as Collection<RawStyle>
+
+    if (options.old === options.new) {
+      throw new Error(`Same names "${options.old}" & new "${options.new}"`)
+    }
 
     const updatedDraft = values(collection.items).map(renameStyleCollection(options.new))
     const styles = await api.syncThemeStyles(updatedDraft)
@@ -45,6 +49,10 @@ export const renameThemeGroup = createAsyncThunk<Payload.UpdatedStyles, Payload.
     const state = getState()
     const collection = state.themes[type]?.[options.theme]
     const groupIds = collection?.groups[options.group].ids
+
+    if (options.group === options.new) {
+      throw new Error(`Same names "${options.group}" & new "${options.new}"`)
+    }
 
     // prettier-ignore
     const draft = values(collection.items)

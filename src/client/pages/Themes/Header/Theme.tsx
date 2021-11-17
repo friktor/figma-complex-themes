@@ -2,14 +2,8 @@ import { ListRowProps } from "react-virtualized"
 import React, { useCallback } from "react"
 import { useDispatch } from "react-redux"
 
-import {
-  cloneCollection,
-  createStyle,
-  createThemeGroup,
-  removeCollection,
-  renameCollection,
-} from "client/features/themes"
-import { Input, SelectPopup } from "client/components"
+import { cloneCollection, removeCollection, renameCollection, setCreateFormOptions } from "client/features/themes"
+import { Icons, Input, SelectPopup } from "client/components"
 
 interface IProps {
   row: ListRowProps
@@ -59,69 +53,42 @@ export function Theme({ item, row }: IProps) {
 
   const onCreateThemeGroup = useCallback(() => {
     dispatch(
-      createThemeGroup({
-        theme: item.theme,
-        group: "Untitled",
+      setCreateFormOptions({
         type: item.styleType,
-      }),
-    )
-  }, [item])
-
-  const onCreateStyle = useCallback(() => {
-    dispatch(
-      createStyle({
-        styleType: item.styleType.toUpperCase() as any,
-        group: "UntitledGroup",
+        target: "theme_group",
         theme: item.theme,
-        name: "Untitled",
       }),
     )
   }, [item])
 
-  const actions = [
-    {
-      icon: "MenuDots",
-      iconSize: 16,
+  const menu = {
+    icon: "MenuDots",
+    iconSize: 16,
 
-      items: [
-        {
-          onClick: onCloneTheme,
-          title: "Duplicate",
-          icon: "Copy",
-        },
-        {
-          onClick: onRemoveTheme,
-          title: "Remove",
-          icon: "Trash",
-        },
-      ],
-    },
-    {
-      icon: "Plus",
-      iconSize: 20,
-
-      items: [
-        {
-          onClick: onCreateThemeGroup,
-          title: "Create Group",
-          icon: "Folder",
-        },
-        {
-          onClick: onCreateStyle,
-          title: "Create Style",
-          icon: item.styleType === "paint" ? "Brush" : "Text",
-        },
-      ],
-    },
-  ]
+    items: [
+      {
+        onClick: onCloneTheme,
+        title: "Duplicate",
+        icon: "Copy",
+      },
+      {
+        onClick: onRemoveTheme,
+        title: "Remove",
+        icon: "Trash",
+      },
+    ],
+  }
 
   return (
     <div key={row.key} style={row.style} className="header theme">
       <Input onChange={onChangeThemeName} validator={/^[a-zA-Z]+$/g} value={item.theme} name="name" />
+
       <div className="actions">
-        {actions.map(selectProps => (
-          <SelectPopup key={`popup-${selectProps.icon}`} {...selectProps} />
-        ))}
+        <SelectPopup {...menu} />
+
+        <div className="action" onClick={onCreateThemeGroup}>
+          <Icons.Plus size={20} />
+        </div>
       </div>
     </div>
   )

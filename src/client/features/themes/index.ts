@@ -100,7 +100,7 @@ const reducers = {
   createThemeGroup(state: Draft<ThemesState>, { payload }: PayloadAction<Payload.CreateThemeGroup>) {
     if (!state[payload.type][payload.theme].groups[payload.group]) {
       state[payload.type][payload.theme].groups[payload.group] = {
-        name: payload.theme,
+        name: payload.group,
         ids: [],
       }
     }

@@ -102,15 +102,6 @@ export function Themes() {
     )
   }
 
-  const listProps = {
-    rowRenderer: rowRenderer,
-    rowHeight: getRowHeight,
-    rowCount: list.length,
-    overscanRowCount: 10,
-    className: "list",
-    ref: listRef,
-  }
-
   const actions = [
     {
       className: "action theme-type",
@@ -152,15 +143,6 @@ export function Themes() {
     },
   ]
 
-  const listCalculator = (size: Size): ReactNode => (
-    <List
-      // height={size.height}
-      width={size.width}
-      height={520}
-      {...listProps}
-    />
-  )
-
   return (
     <div className="page themes">
       <div className="header">
@@ -173,7 +155,22 @@ export function Themes() {
         </div>
       </div>
 
-      <AutoSizer children={listCalculator} />
+      {list.length > 0 ? (
+        <List
+          rowRenderer={rowRenderer}
+          rowHeight={getRowHeight}
+          rowCount={list.length}
+          overscanRowCount={10}
+          className={"list"}
+          ref={listRef}
+          height={528}
+          width={340}
+        />
+      ) : (
+        <div className="empty">
+          <div className="title">Style collections is empty</div>
+        </div>
+      )}
     </div>
   )
 }
