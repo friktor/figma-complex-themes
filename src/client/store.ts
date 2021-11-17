@@ -4,9 +4,17 @@ import logger from "redux-logger"
 import themesReducer from "./features/themes"
 
 export const store = configureStore({
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(logger),
   reducer: {
     themes: themesReducer,
+  },
+  middleware: getDefaultMiddleware => {
+    const middlewares = getDefaultMiddleware()
+    
+    if (process.env.NODE_ENV !== "production") {
+      middlewares.push(logger)
+    }
+
+    return middlewares
   },
 })
 
