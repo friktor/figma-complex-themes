@@ -1,27 +1,28 @@
-import { AutoSizer, List, ListRowProps, Size } from "react-virtualized"
-import React, { ReactNode, useCallback, useRef, useState } from "react"
+import React, { useCallback, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { List, ListRowProps } from "react-virtualized"
 
-import { createGroup, createTheme, getThemes, setCreateFormOptions } from "client/features/themes"
 import { getFlatPaintThemes, getFlatTextThemes, getSelections } from "client/selectors"
+import { getThemes, setCreateFormOptions } from "client/features/themes"
 import { SelectPopup } from "client/components"
 import objectSwitch from "utils/objectSwitch"
 import * as Divider from "./Divider"
 import * as Header from "./Header"
+import { StyleType } from "models"
 import * as api from "client/api"
 import { Search } from "./Search"
 import { Item } from "./Item"
 
 export function Themes() {
-  const [themeType, setThemeType] = useState<"paint" | "text">("paint")
+  const [themeType, setThemeType] = useState<StyleType>(StyleType.PAINT)
   const selections = useSelector(getSelections)
   const dispatch = useDispatch()
   const listRef = useRef()
 
   const list = useSelector(
     objectSwitch(themeType, {
-      paint: getFlatPaintThemes,
-      text: getFlatTextThemes,
+      [StyleType.PAINT]: getFlatPaintThemes,
+      [StyleType.TEXT]: getFlatTextThemes,
     }),
   )
 
@@ -63,11 +64,11 @@ export function Themes() {
   )
 
   const onCreateTempGroup = useCallback(() => {
-    dispatch(setCreateFormOptions({ type: themeType, target: "group" }))
+    dispatch(setCreateFormOptions({ type: themeType, target: "group" } as any))
   }, [themeType])
 
   const onCreateTempTheme = useCallback(() => {
-    dispatch(setCreateFormOptions({ type: themeType, target: "theme" }))
+    dispatch(setCreateFormOptions({ type: themeType, target: "theme" } as any))
   }, [])
 
   const onImportStyles = useCallback(async () => {
@@ -77,7 +78,7 @@ export function Themes() {
   }, [selections])
 
   const onChangeThemeType = useCallback(
-    (key: "paint" | "text") => () => {
+    (key: StyleType) => () => {
       setThemeType(key)
     },
     [],
@@ -113,7 +114,7 @@ export function Themes() {
         text: "Text",
       }),
 
-      items: ["paint", "text"].map((key: "paint" | "text") => ({
+      items: [StyleType.PAINT, StyleType.TEXT].map((key: StyleType) => ({
         onClick: onChangeThemeType(key),
         title: `Show ${key} themes`,
         icon: objectSwitch(key, {

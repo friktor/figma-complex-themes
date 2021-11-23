@@ -3,17 +3,18 @@ import { createSelector } from "@reduxjs/toolkit"
 import { Collection } from "client/features/themes"
 import { flatThemesMapReducer } from "./flatReducer"
 import { RootState } from "client/features"
+import { StyleType } from "models"
 
 const { values } = Object
 
 export const getCreateFormOptions = (state: RootState) => state.themes.forms.create
-export const getOpenedGroups = (state: RootState) => state.themes.openedGroups
+export const getOpened = (state: RootState) => state.themes.opened
 export const getSelections = (state: RootState) => state.themes.selections
 export const getSearchQuery = (state: RootState) => state.themes.search
 
 export const getFullLibrary = (state: RootState) => state.themes.library
-export const getPaintThemes = (state: RootState) => state.themes.paint
-export const getTextThemes = (state: RootState) => state.themes.text
+export const getPaintThemes = (state: RootState) => state.themes.PAINT
+export const getTextThemes = (state: RootState) => state.themes.TEXT
 
 export const getEditableStyle = (state: RootState) => state.themes.editable
 
@@ -26,31 +27,35 @@ export const getAvailableThemes = (state: RootState) => {
     return arr
   }
 
+  // prettier-ignore
   const themes = Array.from(
-    new Set([...values(state.themes.paint).reduce(_reducer, []), ...values(state.themes.text).reduce(_reducer, [])]),
+    new Set([
+      ...values(state.themes.PAINT).reduce(_reducer, []),
+      ...values(state.themes.TEXT).reduce(_reducer, [])
+    ]),
   )
 
   return themes
 }
 
 export const getFlatPaintThemes = createSelector(
-  [getPaintThemes, getOpenedGroups, getSearchQuery],
-  (collections, openedGroups, searchQuery) =>
+  [getPaintThemes, getOpened, getSearchQuery],
+  (collections, opened, searchQuery) =>
     flatThemesMapReducer({
-      styleType: "paint",
-      openedGroups,
+      styleType: StyleType.PAINT,
       collections,
       searchQuery,
+      opened,
     }),
 )
 
 export const getFlatTextThemes = createSelector(
-  [getTextThemes, getOpenedGroups, getSearchQuery],
-  (collections, openedGroups, searchQuery) =>
+  [getTextThemes, getOpened, getSearchQuery],
+  (collections, opened, searchQuery) =>
     flatThemesMapReducer({
-      styleType: "text",
-      openedGroups,
+      styleType: StyleType.TEXT,
       collections,
       searchQuery,
+      opened,
     }),
 )

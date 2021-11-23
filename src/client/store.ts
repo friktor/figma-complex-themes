@@ -9,7 +9,7 @@ export const store = configureStore({
   },
   middleware: getDefaultMiddleware => {
     const middlewares = getDefaultMiddleware()
-    
+
     if (process.env.NODE_ENV !== "production") {
       middlewares.push(logger)
     }

@@ -1,5 +1,5 @@
 import { RawPaintStyle, RawTextStyle } from "models"
-import { Collections } from "../../types"
+import { Collections } from "../types"
 
 export const denormalizeStyles = <T = RawPaintStyle | RawTextStyle>(
   styles: Array<T>,
@@ -32,7 +32,10 @@ export const denormalizeStyles = <T = RawPaintStyle | RawTextStyle>(
     const { theme, group, id } = (style as any).base
 
     if (theme) {
-      themes[theme].groups[group].ids.push(id)
+      if (themes[theme].groups[group].ids.indexOf(id) < 0) {
+        themes[theme].groups[group].ids.push(id)
+      }
+
       themes[theme].items[id] = style
     } else {
       themes[group].items[id] = style

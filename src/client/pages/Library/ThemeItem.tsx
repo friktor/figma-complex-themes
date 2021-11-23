@@ -2,8 +2,8 @@ import React, { useCallback } from "react"
 import { useDispatch } from "react-redux"
 import * as Alert from "react-alert"
 
+import { getLibrary, getThemes } from "client/features/themes"
 import { Input, SelectPopup } from "client/components"
-import { getLibrary } from "client/features/themes"
 import { SerializedTheme } from "models"
 import * as api from "client/api"
 
@@ -32,6 +32,7 @@ export function ThemeItem({ theme }: IProps) {
   const onMergeWithPageCollection = useCallback(async () => {
     await api.mergeSerializedThemeWithCurrent(theme)
     dispatch(getLibrary())
+    dispatch(getThemes())
 
     alert.success("Merge with current finished", {
       type: "success",

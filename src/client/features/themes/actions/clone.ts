@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
+import { updateStylename } from "../helpers"
 import { RootState } from "client/features"
-import { updateStylename } from "./helpers"
 import { cloneDeep } from "utils/helpers"
 import { Collection } from "../types"
 import * as Payload from "./payload"

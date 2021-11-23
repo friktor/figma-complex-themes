@@ -13,7 +13,7 @@ interface IProps {
 
   item: {
     style: RawPaintStyle | RawTextStyle
-    styleType: "text" | "paint"
+    styleType: StyleType
     type: "STYLE_ITEM"
     theme?: string
     group: string

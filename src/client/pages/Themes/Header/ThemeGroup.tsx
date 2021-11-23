@@ -6,6 +6,7 @@ import cx from "classnames"
 import { Icons, Input, SelectPopup } from "client/components"
 import { getSearchQuery } from "client/selectors"
 import { RootState } from "client/features"
+import { StyleType } from "models"
 
 import {
   renameThemeGroup,
@@ -19,8 +20,8 @@ interface IProps {
   row: ListRowProps
 
   item: {
-    styleType: "paint" | "text"
     type: "THEME_GROUP_HEADER"
+    styleType: StyleType
     title: string
 
     theme: string
@@ -37,7 +38,7 @@ export function ThemeGroup({ item, row }: IProps) {
     const hasSearch = searchQuery && searchQuery.length > 0
     const key = `${theme}:${group}`
 
-    return state.themes.openedGroups[key] || hasSearch
+    return state.themes.opened[key] || hasSearch
   })
 
   const onChange = useCallback(
@@ -79,7 +80,7 @@ export function ThemeGroup({ item, row }: IProps) {
   const onCreateStyle = useCallback(() => {
     dispatch(
       createStyle({
-        styleType: item.styleType.toUpperCase() as any,
+        styleType: item.styleType,
         theme: item.theme,
         group: item.group,
         name: "Untitled",

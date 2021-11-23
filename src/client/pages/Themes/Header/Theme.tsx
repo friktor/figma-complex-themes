@@ -4,12 +4,13 @@ import { useDispatch } from "react-redux"
 
 import { cloneCollection, removeCollection, renameCollection, setCreateFormOptions } from "client/features/themes"
 import { Icons, Input, SelectPopup } from "client/components"
+import { StyleType } from "models"
 
 interface IProps {
   row: ListRowProps
 
   item: {
-    styleType: "paint" | "text"
+    styleType: StyleType
     type: "THEME_HEADER"
     title: string
     theme: string

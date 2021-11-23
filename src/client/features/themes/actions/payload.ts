@@ -1,24 +1,24 @@
 import { RawStyle, StyleType } from "models"
 
 export interface UpdatedStyles {
-  type: "paint" | "text"
+  type: StyleType
   styles: RawStyle[]
 }
 
 export interface SetOpenedGroup {
-  // type: "paint" | "text"
+  // type: StyleType
   opened?: boolean
   group: string
   theme?: string
 }
 
 export interface CreateTheme {
-  type: string | "paint" | "text"
+  type: string | StyleType
   theme: string
 }
 
 export interface CreateGroup {
-  type: string | "paint" | "text"
+  type: string | StyleType
   group: string
 }
 
@@ -34,14 +34,14 @@ export interface CreateStyle {
 }
 
 export interface RemoveCollection {
-  type: "paint" | "text"
+  type: StyleType
   name: string
 
   removed?: string[] // callback
 }
 
 export interface RemoveThemeGroup {
-  type: "paint" | "text"
+  type: StyleType
   theme: string
   group: string
 
@@ -49,7 +49,7 @@ export interface RemoveThemeGroup {
 }
 
 export interface RemoveStyle {
-  type: "paint" | "text"
+  type: StyleType
   collection: string // "theme" | "group"
   id: string // style id
 
@@ -57,13 +57,13 @@ export interface RemoveStyle {
 }
 
 export interface CloneCollection {
-  type: "paint" | "text"
+  type: StyleType
   old: string // old name
   new: string // new name
 }
 
 export interface CloneThemeGroup {
-  type: "paint" | "text"
+  type: StyleType
   theme: string // source theme
   group: string // source group
 
@@ -71,13 +71,13 @@ export interface CloneThemeGroup {
 }
 
 export interface RenameCollection {
-  type: "paint" | "text"
+  type: StyleType
   old: string // old name
   new: string // new name
 }
 
 export interface RenameThemeGroup {
-  type: "paint" | "text"
+  type: StyleType
   theme: string // source theme
   group: string // source group
 
@@ -85,7 +85,7 @@ export interface RenameThemeGroup {
 }
 
 export interface RenameStyle {
-  type: "paint" | "text"
+  type: StyleType
   collection: string // "theme" | "group"
   id: string // style id
 

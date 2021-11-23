@@ -1,8 +1,24 @@
+import { Library, RawPaintStyle, RawStyle, RawTextStyle, SelectionEvent, StyleType } from "models"
+
+export interface ThemesState {
+  PAINT: Collections<RawPaintStyle>
+  TEXT: Collections<RawTextStyle>
+
+  opened: Record<string, boolean>
+  selections: SelectionEvent[]
+  library: Library
+
+  editable?: RawStyle
+  search?: string
+
+  forms: Forms
+}
+
 export type CreateFormTarget = "theme" | "group" | "theme_group"
 
 export interface CreateForm {
   target: CreateFormTarget
-  type: "paint" | "text"
+  type: StyleType
   theme?: string
 }
 

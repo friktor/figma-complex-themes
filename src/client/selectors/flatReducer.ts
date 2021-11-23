@@ -1,21 +1,21 @@
-import { RawStyle } from "models"
+import { RawStyle, StyleType } from "models"
 import { last } from "utils/helpers"
 const { keys } = Object
 
 interface FlatReducerParams {
-  openedGroups: Record<string, boolean>
-  styleType: "paint" | "text"
+  opened: Record<string, boolean>
+  styleType: StyleType
   collections: any
 
   searchQuery?: string
 }
 
 export const flatThemesMapReducer = (options: FlatReducerParams) => {
-  const { searchQuery, collections, openedGroups, styleType } = options
+  const { searchQuery, collections, opened, styleType } = options
 
   const hasSearchQuery = searchQuery && searchQuery.length > 1
   const isContainSearch = name => name.includes(searchQuery)
-  const isOpened = key => openedGroups[key]
+  const isOpened = key => opened[key]
   const stackList = []
 
   const themeKeys = []
