@@ -40,10 +40,12 @@ export const paintToCss = {
       const {
         color: { r, g, b, a },
       } = stop
+      
       const alpha = parseFloat(a.toFixed(2))
 
       const position = (stop.position * 100).toFixed(0)
-      const color = chroma(r, g, b, alpha, "gl").css()
+      const _color = chroma(r, g, b, alpha, "gl")
+      const color = alpha < 1 ? _color.css() : _color.hex()
 
       return `${color} ${position}%`
     })
@@ -56,9 +58,11 @@ export const paintToCss = {
       color: { r, g, b },
       opacity: a,
     } = paint
-    const alpha = parseFloat(a.toFixed(2))
 
-    return chroma(r, g, b, alpha, "gl").css()
+    const alpha = parseFloat(a.toFixed(2))
+    const color = chroma(r, g, b, alpha, "gl")
+
+    return alpha < 1 ? color.css() : color.hex()
   },
 }
 
