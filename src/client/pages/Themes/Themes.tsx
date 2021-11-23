@@ -110,16 +110,16 @@ export function Themes() {
       iconSize: 12,
 
       icon: objectSwitch(themeType, {
-        paint: "Brush",
-        text: "Text",
+        [StyleType.PAINT]: "Brush",
+        [StyleType.TEXT]: "Text",
       }),
 
       items: [StyleType.PAINT, StyleType.TEXT].map((key: StyleType) => ({
         onClick: onChangeThemeType(key),
-        title: `Show ${key} themes`,
+        title: `Show ${key.toLowerCase()} themes`,
         icon: objectSwitch(key, {
-          paint: "Brush",
-          text: "Text",
+          [StyleType.PAINT]: "Brush",
+          [StyleType.TEXT]: "Text",
         }),
       })),
     },

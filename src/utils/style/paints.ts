@@ -40,7 +40,7 @@ export const paintToCss = {
       const {
         color: { r, g, b, a },
       } = stop
-      
+
       const alpha = parseFloat(a.toFixed(2))
 
       const position = (stop.position * 100).toFixed(0)
